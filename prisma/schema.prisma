@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,92 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model account {
+  idx        Int        @id @default(autoincrement())
+  sdvx_id    String     @db.VarChar(255)
+  pw         String     @db.VarChar(255)
+  vf         Int
+  play_count Int
+  created_at DateTime   @db.Timestamptz(6)
+  playdata   playdata[]
+  tag        tag[]
+}
+
+model chart {
+  idx           Int        @id @default(autoincrement())
+  song_idx      Int        @default(autoincrement())
+  level         Int
+  type          String?    @db.VarChar(255)
+  jacket        String?    @db.VarChar(255)
+  chart_img     String?    @db.VarChar(255)
+  effector      String?    @db.VarChar(255)
+  illustrator   String     @db.VarChar(255)
+  max_exscore   Int?
+  max_chain     Int?
+  chip_count    Int?
+  hold_count    Int?
+  tsumami_count Int?
+  deleted_at    DateTime   @db.Timestamptz(6)
+  song          song       @relation(fields: [song_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_chart")
+  playdata      playdata[]
+  radar         radar[]
+}
+
+model playdata {
+  idx         Int      @id @default(autoincrement())
+  account_idx Int      @default(autoincrement())
+  chart_idx   Int      @default(autoincrement())
+  chart_vf    Int
+  rank        Int?
+  play_count  Int?
+  clear_count Int
+  uc_count    Int?
+  puc_count   Int?
+  score       Int
+  ex_score    Int
+  created_at  DateTime @db.Timestamptz(6)
+  account     account  @relation(fields: [account_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_playdata")
+  chart       chart    @relation(fields: [chart_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_playdata")
+}
+
+model radar {
+  idx       Int   @id @default(autoincrement())
+  chart_idx Int   @default(autoincrement())
+  note      Int
+  peak      Int
+  tsumami   Int
+  tricky    Int
+  handtrip  Int
+  onehand   Int
+  chart     chart @relation(fields: [chart_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_radar")
+}
+
+model song {
+  idx             Int      @id @default(autoincrement())
+  title           String   @db.VarChar(255)
+  artist          String   @db.VarChar(255)
+  ascii           String   @db.VarChar(255)
+  ascii_title     String   @db.VarChar
+  ascii_artist    String   @db.VarChar
+  title_yomigana  String   @db.VarChar
+  artist_yomigana String   @db.VarChar
+  version         Int
+  bpm             Int
+  genres          String   @db.VarChar(255)
+  date            DateTime @db.Timestamp(6)
+  eac_exc         Boolean
+  chart           chart[]
+  tag             tag[]
+}
+
+model tag {
+  idx         Int       @id @default(autoincrement())
+  account_idx Int       @default(autoincrement())
+  song_idx    Int       @default(autoincrement())
+  name        String    @db.VarChar(255)
+  created_at  DateTime? @db.Timestamptz(6)
+  account     account   @relation(fields: [account_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_tag")
+  song        song      @relation(fields: [song_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_tag")
 }

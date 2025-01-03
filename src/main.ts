@@ -21,9 +21,9 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpErrorFilter());
 
   const config = new DocumentBuilder()
-    .setTitle('convenii')
-    .setDescription('convenii api document')
-    .addTag('convenii')
+    .setTitle('anzuinfo-p')
+    .setDescription('anzuinfo api document')
+    .addTag('anzuinfo')
     .addBearerAuth()
     .build();
 
