@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  app:
+    image: nestjs-anzu-info
+    container_name: nestjs-anzu-info
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+    restart: always
