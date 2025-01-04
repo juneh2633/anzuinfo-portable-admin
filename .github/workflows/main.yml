@@ -11,21 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Git 리포지토리 클론
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 2. Node.js 설정
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: lts
-
+          node-version: 20
 
       - name: Install Dependencies
         run: npm ci
 
-      # 4. 서버에 배포
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.5
         with:
