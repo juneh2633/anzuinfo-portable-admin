@@ -28,7 +28,6 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          port: 433
           script: |
             cd anzu
             pm2 stop all
