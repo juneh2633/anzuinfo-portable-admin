@@ -29,7 +29,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            sudo npm install pm2 -g
             cd /home/ubuntu/anzu
             pm2 stop all || true
             git pull origin main
