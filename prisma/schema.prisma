@@ -37,7 +37,7 @@ model Chart {
   song          Song       @relation(fields: [songIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_chart")
   playdata      Playdata[]
   radar         Radar[]
-  @@map("Chart")
+  @@map("chart")
 }
 
 model Playdata {
@@ -55,7 +55,7 @@ model Playdata {
   createdAt  DateTime @db.Timestamptz(6)
   account     Account  @relation(fields: [accountIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_playdata")
   chart       Chart    @relation(fields: [chartIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_playdata")
-  @@map("Playdata")
+  @@map("playdata")
 }
 
 model Radar {
@@ -68,7 +68,7 @@ model Radar {
   handtrip  Int
   onehand   Int
   chart     Chart @relation(fields: [chartIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_radar")
-  @@map("Radar")
+  @@map("radar")
 
 }
 
@@ -90,7 +90,7 @@ model Song {
   chart           Chart[]
   genre           Genre[]
   tag             Tag[]
-  @@map("Song")
+  @@map("song")
 }
 
 model Tag {
@@ -101,7 +101,7 @@ model Tag {
   createdAt  DateTime? @db.Timestamptz(6) @map("created_at")
   account     Account   @relation(fields: [accountIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_tag")
   song        Song      @relation(fields: [songIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_tag")
-  @@map("Tag")
+  @@map("tag")
 }
 
 model Genre {
@@ -109,5 +109,5 @@ model Genre {
   songIdx  Int  @default(autoincrement()) @map("song_idx")
   genreIdx Int  @map("genre_idx")
   song      Song @relation(fields: [songIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_genre")
-  @@map("Genre")
+  @@map("genre")
 }

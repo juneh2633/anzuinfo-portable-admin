@@ -1,6 +1,7 @@
 
 /static
 db.erd
+/prisma/seed.ts
 
 # compiled output
 /dist
