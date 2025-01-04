@@ -29,6 +29,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            export PATH=$PATH:/usr/local/bin
             cd /home/ubuntu/anzu
             pm2 stop all
             git pull origin main
