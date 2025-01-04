@@ -2,6 +2,7 @@
 # Build  Stage
 FROM node:22-alpine AS builder
 
+
 WORKDIR /usr/src/app
 
 COPY package*.json .
@@ -11,7 +12,7 @@ COPY  . .
 
 RUN npm ci
 
-RUN npx prisma generate
+RUN yes | npx prisma generate
 
 RUN npm run build anzu-info
 
