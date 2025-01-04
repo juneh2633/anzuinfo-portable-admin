@@ -7,90 +7,107 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model account {
+model Account {
   idx        Int        @id @default(autoincrement())
-  sdvx_id    String     @db.VarChar(255)
+  sdvxId     String     @db.VarChar(255) @map("sdvx_id")
   pw         String     @db.VarChar(255)
   vf         Int
-  play_count Int
+  playCount  Int        @map("play_count")
   created_at DateTime   @db.Timestamptz(6)
-  playdata   playdata[]
-  tag        tag[]
+  playdata   Playdata[]
+  tag        Tag[]
+  @@map("account")
 }
 
-model chart {
+model Chart {
   idx           Int        @id @default(autoincrement())
-  song_idx      Int        @default(autoincrement())
+  songIdx      Int        @default(autoincrement()) @map("song_idx")
   level         Int
   type          String?    @db.VarChar(255)
   jacket        String?    @db.VarChar(255)
-  chart_img     String?    @db.VarChar(255)
+  chartImg     String?    @db.VarChar(255) @map("chart_img")
   effector      String?    @db.VarChar(255)
   illustrator   String     @db.VarChar(255)
-  max_exscore   Int?
-  max_chain     Int?
-  chip_count    Int?
-  hold_count    Int?
-  tsumami_count Int?
-  deleted_at    DateTime   @db.Timestamptz(6)
-  song          song       @relation(fields: [song_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_chart")
-  playdata      playdata[]
-  radar         radar[]
+  maxExscore    Int?      @map("max_exscore")
+  maxChain      Int?    @map("max_chain")
+  chipCount     Int?    @map("chip_count")
+  holdCount     Int?    @map("hold_count")
+  tsumamiCount  Int?    @map("tsumami_count")
+  deletedAt     DateTime?   @db.Timestamptz(6) @map("deleted_at")
+  song          Song       @relation(fields: [songIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_chart")
+  playdata      Playdata[]
+  radar         Radar[]
+  @@map("Chart")
 }
 
-model playdata {
-  idx         Int      @id @default(autoincrement())
-  account_idx Int      @default(autoincrement())
-  chart_idx   Int      @default(autoincrement())
-  chart_vf    Int
+model Playdata {
+  idx         Int      @id @default(autoincrement()) 
+  accountIdx Int      @default(autoincrement()) @map("account_idx")
+  chartIdx   Int      @default(autoincrement()) @map("chart_idx")
+  chartVf    Int     @map("chart_vf")
   rank        Int?
-  play_count  Int?
-  clear_count Int
-  uc_count    Int?
-  puc_count   Int?
+  playCount  Int?    @map("play_count")
+  clearCount Int     @map("clear_count")
+  ucCount    Int?    @map("uc_count")
+  pucCount   Int?    @map("puc_count")
   score       Int
-  ex_score    Int
-  created_at  DateTime @db.Timestamptz(6)
-  account     account  @relation(fields: [account_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_playdata")
-  chart       chart    @relation(fields: [chart_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_playdata")
+  exScore    Int     @map("ex_score")
+  createdAt  DateTime @db.Timestamptz(6)
+  account     Account  @relation(fields: [accountIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_playdata")
+  chart       Chart    @relation(fields: [chartIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_playdata")
+  @@map("Playdata")
 }
 
-model radar {
+model Radar {
   idx       Int   @id @default(autoincrement())
-  chart_idx Int   @default(autoincrement())
-  note      Int
+  chartIdx Int   @default(autoincrement()) @map("chart_idx")
+  notes     Int
   peak      Int
   tsumami   Int
   tricky    Int
   handtrip  Int
   onehand   Int
-  chart     chart @relation(fields: [chart_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_radar")
+  chart     Chart @relation(fields: [chartIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_radar")
+  @@map("Radar")
+
 }
 
-model song {
+model Song {
   idx             Int      @id @default(autoincrement())
   title           String   @db.VarChar(255)
   artist          String   @db.VarChar(255)
   ascii           String   @db.VarChar(255)
-  ascii_title     String   @db.VarChar
-  ascii_artist    String   @db.VarChar
-  title_yomigana  String   @db.VarChar
-  artist_yomigana String   @db.VarChar
+  asciiTitle     String   @db.VarChar @map("ascii_title")
+  asciiArtist    String   @db.VarChar @map("ascii_artist") 
+  titleYomigana  String   @db.VarChar @map("title_yomigana")
+  artistYomigana String   @db.VarChar @map("artist_yomigana")
   version         Int
-  bpm             Int
-  genres          String   @db.VarChar(255)
+  mainBpm        Int? @map("main_bpm")
+  bpm             String   @db.VarChar(255)
+  genreTxt       String   @db.VarChar(255) @map("genre_txt")
   date            DateTime @db.Timestamp(6)
-  eac_exc         Boolean
-  chart           chart[]
-  tag             tag[]
+  konaste         Boolean
+  chart           Chart[]
+  genre           Genre[]
+  tag             Tag[]
+  @@map("Song")
 }
 
-model tag {
+model Tag {
   idx         Int       @id @default(autoincrement())
-  account_idx Int       @default(autoincrement())
-  song_idx    Int       @default(autoincrement())
+  accountIdx Int       @default(autoincrement()) @map("account_idx")
+  songIdx    Int       @default(autoincrement()) @map("song_idx")
   name        String    @db.VarChar(255)
-  created_at  DateTime? @db.Timestamptz(6)
-  account     account   @relation(fields: [account_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_tag")
-  song        song      @relation(fields: [song_idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_tag")
+  createdAt  DateTime? @db.Timestamptz(6) @map("created_at")
+  account     Account   @relation(fields: [accountIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_tag")
+  song        Song      @relation(fields: [songIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_tag")
+  @@map("Tag")
+}
+
+model Genre {
+  idx       Int  @id @default(autoincrement()) 
+  songIdx  Int  @default(autoincrement()) @map("song_idx")
+  genreIdx Int  @map("genre_idx")
+  song      Song @relation(fields: [songIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_genre")
+  @@map("Genre")
 }
