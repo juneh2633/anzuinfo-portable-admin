@@ -2,10 +2,13 @@ version: '3.9'
 
 services:
   app:
-    image: nestjs-anzu-info
-    container_name: nestjs-anzu-info
+    build:
+      context: .
+    image: anzu-info
+    container_name: anzu-info
     ports:
       - '3000:3000'
     environment:
-      NODE_ENV: production
-    restart: always
+      DATABASE_URL: ${DATABASE_URL}
+    env_file:
+      - .env
