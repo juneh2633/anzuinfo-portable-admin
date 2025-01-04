@@ -29,11 +29,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            export PATH=$PATH:/usr/local/bin
+            ls
             cd /home/ubuntu/anzu
-            pm2 stop all
+
             git pull origin main
-            pm2 kill
+
             npm i --legacy-peer-deps  
-            npm run build
-            pm2 start dist/main.js
+            nest start
