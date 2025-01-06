@@ -3,12 +3,12 @@ import { Type } from 'class-transformer';
 import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class SignInDto {
-  @IsEmail()
+  @IsString()
   @ApiProperty({
-    description: '로그인 이메일',
-    default: 'juneh2633@gmail.com',
+    description: '로그인 아이디',
+    default: 'juneh2633',
   })
-  email: string;
+  id: string;
 
   @IsString()
   @ApiProperty({
