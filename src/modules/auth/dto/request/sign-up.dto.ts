@@ -2,12 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString } from 'class-validator';
 
 export class SignUpDto {
-  @IsEmail()
+  @IsString()
   @ApiProperty({
-    description: '회원가입 이메일',
-    default: 'juneh2633@gmail.com',
+    description: '회원가입 아이디',
+    default: 'juneh2633',
   })
-  email: string;
+  id: string;
 
   @IsString()
   @ApiProperty({
@@ -15,11 +15,4 @@ export class SignUpDto {
     default: 'asdf1234',
   })
   password: string;
-
-  @IsString()
-  @ApiProperty({
-    description: '회원가입 닉네임',
-    default: 'asdf',
-  })
-  nickname: string;
 }
