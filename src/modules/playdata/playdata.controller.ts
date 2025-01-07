@@ -16,9 +16,7 @@ export class PlaydataController {
 
   @Post('/')
   async inputPlaydata(@Body() getDataDto: GetDataDto) {
-    console.log('@@');
-    console.log(getDataDto.tracks);
-
+    await this.playdataService.postData(getDataDto);
     return { status: 'success', message: 'Data received successfully' };
   }
 }

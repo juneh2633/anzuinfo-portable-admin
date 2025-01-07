@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Chart } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { RedisCacheService } from 'src/common/redis/redis.service';
+import { RedisService } from 'src/common/redis/redis.service';
 
 @Injectable()
 export class ChartRepository {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly redisService: RedisCacheService,
+    private readonly redisService: RedisService,
   ) {}
 
   async selectChartByIdx(idx: number): Promise<Chart | null> {
@@ -42,6 +42,6 @@ export class ChartRepository {
     return chartList;
   }
   async setChartIdx(idx: number, typeAndTitle: string): Promise<void> {
-    await this.redisService.set(typeAndTitle, idx, 300);
+    await this.redisService.set(typeAndTitle, idx.toString());
   }
 }

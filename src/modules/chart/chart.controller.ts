@@ -1,4 +1,12 @@
-import { Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ChartService } from './chart.service';
 import { ExceptionList } from 'src/common/decorator/exception-list.decorator';
 import { ChartDto } from './dto/response/chart.reponse.dto';

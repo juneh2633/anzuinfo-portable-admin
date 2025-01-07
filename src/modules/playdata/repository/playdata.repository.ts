@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-
+interface playdata {
+  accountIdx: number;
+  chartIdx: number;
+  chartVf: number;
+  rank: number;
+  score: number;
+}
 @Injectable()
 export class PlaydataRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -11,7 +17,7 @@ export class PlaydataRepository {
     chartVf: number,
     rank: number,
     score: number,
-    prismaTx: Prisma.TransactionClient,
+    prismaTx: Prisma.TransactionClient | null,
   ): Promise<void> {
     const prisma = prismaTx ? prismaTx : this.prismaService;
     await prisma.playdata.create({
@@ -22,6 +28,12 @@ export class PlaydataRepository {
         rank: rank,
         score: score,
       },
+    });
+  }
+
+  async insertPlaydataList(playdataList: playdata[]): Promise<void> {
+    await this.prismaService.playdata.createMany({
+      data: playdataList,
     });
   }
 }

@@ -3,13 +3,14 @@ import { ChartRepository } from './repository/chart.repository';
 import { RadarRepository } from './repository/radar.repository';
 import { ChartWithRadarEntity } from './entity/ChartWithRadar.entity';
 import { NoChartException } from './exception/no-chart.exception';
-import { RedisCacheService } from 'src/common/redis/redis.service';
+import { RedisService } from 'src/common/redis/redis.service';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class ChartService {
   constructor(
     private readonly chartRepository: ChartRepository,
-    private readonly redisService: RedisCacheService,
+    private readonly redisService: RedisService,
     private readonly radarRepository: RadarRepository,
   ) {}
 
@@ -30,9 +31,20 @@ export class ChartService {
     for (const data of dataList) {
       const idx = data.idx;
 
+      if (
+        data.type !== 'novice' &&
+        data.type !== 'advanced' &&
+        data.type !== 'exhaust' &&
+        data.type !== 'maximum'
+      ) {
+        data.type = 'infinite';
+      }
       const typeAndTitle = data.type + '____' + data.song.title;
+      const safeKey = crypto
+        .createHash('sha256')
+        .update(typeAndTitle, 'utf8')
+        .digest('hex');
 
-      const safeKey = encodeURIComponent(typeAndTitle);
       await this.chartRepository.setChartIdx(idx, safeKey);
     }
   }
