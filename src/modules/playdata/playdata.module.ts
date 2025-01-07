@@ -5,9 +5,10 @@ import { RedisModule } from 'src/common/redis/redis.module';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { PlaydataRepository } from './repository/playdata.repository';
 import { SongRepository } from './repository/song.repository';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
-  imports: [RedisModule, PrismaModule],
+  imports: [RedisModule, PrismaModule, CommonModule],
   providers: [PlaydataService, PlaydataRepository, SongRepository],
   controllers: [PlaydataController],
 })

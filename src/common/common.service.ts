@@ -89,6 +89,6 @@ export class CommonService {
     const volforce =
       level * 2 * (score / 10000000) * scoreCoefficient * clearCoefficient;
 
-    return Math.floor(volforce * 100) / 100;
+    return (Math.floor(volforce * 100) / 100) * 10;
   }
 }

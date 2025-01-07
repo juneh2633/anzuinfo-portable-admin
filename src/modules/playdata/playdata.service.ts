@@ -5,8 +5,8 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { SongRepository } from './repository/song.repository';
 import { RedisService } from 'src/common/redis/redis.service';
 import * as crypto from 'crypto';
-import e from 'express';
 import { CommonService } from 'src/common/common.service';
+import { PlaydataWithChart } from './entity/PlaydataWithChart.entity';
 
 @Injectable()
 export class PlaydataService {
@@ -26,12 +26,13 @@ export class PlaydataService {
       async (prisma) => {
         const playdataPromises = getDataDto.tracks.map(async (track) => {
           const [title, type, status, score] = track.split('\t');
-          const typeAndTitle = `${type}____${title}`;
+          const typeAndTitle = type + '____' + title;
 
           const safeKey = crypto
             .createHash('sha256')
             .update(typeAndTitle, 'utf8')
             .digest('hex');
+
           let chartIdxWithLevel = '';
           if (title.startsWith('Prayer')) {
             if (title === 'Prayer (MÚSECA)') {
@@ -56,19 +57,29 @@ export class PlaydataService {
           } else {
             chartIdxWithLevel = await this.redisService.get(safeKey);
           }
-          const [chartIdx, level] = track.split('@@');
+
+          const [chartIdx, level] = chartIdxWithLevel.split('@@');
+
           // if (!chartIdx) {
           //   console.warn(`Redis에서 chartIdx를 찾을 수 없습니다: ${type}`);
           //   console.log(title);
           //   return null;
           // }
           const rankIdx = this.commonService.getRankIdx(status);
+          // console.log(
+          //   chartIdx,
+          //   this.commonService.getVolforce(
+          //     parseInt(level, 10),
+          //     parseInt(score, 10),
+          //     rankIdx,
+          //   ),
+          // );
           return {
             accountIdx,
             chartIdx: parseInt(chartIdx, 10),
             chartVf: this.commonService.getVolforce(
-              parseInt(level),
-              parseInt(score),
+              parseInt(level, 10),
+              parseInt(score, 10),
               rankIdx,
             ),
             rank: rankIdx,
@@ -88,6 +99,17 @@ export class PlaydataService {
       },
     );
   }
+  async getVFTable(accountIdx: number) {
+    const rawData = await this.playdataRepository.selectVF(accountIdx);
+    return rawData.map((playdata) =>
+      PlaydataWithChart.createDto(
+        playdata.chart,
+        playdata.chart.song,
+        playdata,
+      ),
+    );
+  }
+
   async testPost() {
     await this.playdataRepository.insertPlaydata(1, 1, 0, 1, 123, null);
   }

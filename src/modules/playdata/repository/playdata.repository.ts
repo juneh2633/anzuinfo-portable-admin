@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
+
+import { PlaydataWithChartAndSong } from '../model/playdata-chart-and-song.model';
 interface playdata {
   accountIdx: number;
   chartIdx: number;
@@ -34,6 +36,25 @@ export class PlaydataRepository {
   async insertPlaydataList(playdataList: playdata[]): Promise<void> {
     await this.prismaService.playdata.createMany({
       data: playdataList,
+    });
+  }
+
+  async selectVF(accountIdx: number): Promise<PlaydataWithChartAndSong[]> {
+    return await this.prismaService.playdata.findMany({
+      where: {
+        accountIdx: accountIdx,
+      },
+      include: {
+        chart: {
+          include: {
+            song: true,
+          },
+        },
+      },
+      orderBy: {
+        chartVf: 'desc',
+      },
+      take: 50,
     });
   }
 }

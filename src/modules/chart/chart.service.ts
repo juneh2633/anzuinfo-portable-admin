@@ -46,6 +46,7 @@ export class ChartService {
         .digest('hex');
       const idxWithLevel = idx.toString() + '@@' + data.level.toString();
       await this.chartRepository.setChartIdx(idxWithLevel, safeKey);
+      console.log(idxWithLevel, safeKey);
     }
   }
 }
