@@ -49,11 +49,11 @@ model Playdata {
   chartVf    Int     @map("chart_vf")
   rank        Int?
   playCount  Int?    @map("play_count")
-  clearCount Int     @map("clear_count")
+  clearCount Int?     @map("clear_count")
   ucCount    Int?    @map("uc_count")
   pucCount   Int?    @map("puc_count")
   score       Int
-  exScore    Int     @map("ex_score")
+  exScore    Int?    @map("ex_score")
   createdAt  DateTime @default(now()) @db.Timestamptz(6)
   account     Account  @relation(fields: [accountIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_playdata")
   chart       Chart    @relation(fields: [chartIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_playdata")

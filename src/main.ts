@@ -26,7 +26,15 @@ async function bootstrap() {
     .addTag('anzuinfo')
     .addBearerAuth()
     .build();
-
+  app.enableCors({
+    origin: [
+      'https://p.eagate.573.jp',
+      'http://localhost:3000',
+      'https://juneh2633.ddns.net',
+    ],
+    methods: 'GET,POST',
+    allowedHeaders: 'Content-Type,Authorization',
+  });
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('api', app, document);

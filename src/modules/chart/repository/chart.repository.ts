@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Chart } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
+import { RedisService } from 'src/common/redis/redis.service';
 
 @Injectable()
 export class ChartRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly redisService: RedisService,
+  ) {}
 
   async selectChartByIdx(idx: number): Promise<Chart | null> {
     const chart = await this.prismaService.chart.findFirst({
@@ -22,5 +26,23 @@ export class ChartRepository {
       },
     });
     return chartList;
+  }
+
+  async selectTypeWithTitle(): Promise<any[]> {
+    const chartList = await this.prismaService.chart.findMany({
+      select: {
+        idx: true,
+        type: true,
+        song: true,
+        level: true,
+      },
+      orderBy: {
+        idx: 'asc',
+      },
+    });
+    return chartList;
+  }
+  async setChartIdx(idxWithLevel: string, typeAndTitle: string): Promise<void> {
+    await this.redisService.set(typeAndTitle, idxWithLevel);
   }
 }
