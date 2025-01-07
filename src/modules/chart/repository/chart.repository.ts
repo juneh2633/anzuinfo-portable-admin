@@ -34,6 +34,7 @@ export class ChartRepository {
         idx: true,
         type: true,
         song: true,
+        level: true,
       },
       orderBy: {
         idx: 'asc',
@@ -41,7 +42,7 @@ export class ChartRepository {
     });
     return chartList;
   }
-  async setChartIdx(idx: number, typeAndTitle: string): Promise<void> {
-    await this.redisService.set(typeAndTitle, idx.toString());
+  async setChartIdx(idxWithLevel: string, typeAndTitle: string): Promise<void> {
+    await this.redisService.set(typeAndTitle, idxWithLevel);
   }
 }

@@ -6,12 +6,14 @@ import { SongRepository } from './repository/song.repository';
 import { RedisService } from 'src/common/redis/redis.service';
 import * as crypto from 'crypto';
 import e from 'express';
+import { CommonService } from 'src/common/common.service';
 
 @Injectable()
 export class PlaydataService {
   constructor(
     private readonly playdataRepository: PlaydataRepository,
     private readonly songRepository: SongRepository,
+    private readonly commonService: CommonService,
     private readonly prismaService: PrismaService,
     private readonly redisService: RedisService,
   ) {}
@@ -30,28 +32,46 @@ export class PlaydataService {
             .createHash('sha256')
             .update(typeAndTitle, 'utf8')
             .digest('hex');
-          let chartIdx = '';
+          let chartIdxWithLevel = '';
           if (title.startsWith('Prayer')) {
             if (title === 'Prayer (MÚSECA)') {
-              chartIdx = '1971';
+              if (type === 'novice') {
+                chartIdxWithLevel = '7231@@6';
+              } else if (type === 'advanced') {
+                chartIdxWithLevel = '7232@@12';
+              } else if (type === 'exhaust') {
+                chartIdxWithLevel = '7233@@15';
+              } else {
+                chartIdxWithLevel = '7234@@18';
+              }
             } else {
-              chartIdx = '772';
+              if (type === 'novice') {
+                chartIdxWithLevel = '2521@@6';
+              } else if (type === 'advanced') {
+                chartIdxWithLevel = '2522@@12';
+              } else {
+                chartIdxWithLevel = '2523@@18';
+              }
             }
           } else {
-            chartIdx = await this.redisService.get(safeKey);
+            chartIdxWithLevel = await this.redisService.get(safeKey);
           }
-
-          if (!chartIdx) {
-            console.warn(`Redis에서 chartIdx를 찾을 수 없습니다: ${type}`);
-            console.log(title);
-            return null;
-          }
-
+          const [chartIdx, level] = track.split('@@');
+          // if (!chartIdx) {
+          //   console.warn(`Redis에서 chartIdx를 찾을 수 없습니다: ${type}`);
+          //   console.log(title);
+          //   return null;
+          // }
+          const rankIdx = this.commonService.getRankIdx(status);
           return {
             accountIdx,
             chartIdx: parseInt(chartIdx, 10),
-            chartVf: 0,
-            rank: 0,
+            chartVf: this.commonService.getVolforce(
+              parseInt(level),
+              parseInt(score),
+              rankIdx,
+            ),
+            rank: rankIdx,
             score: parseInt(score, 10),
           };
         });

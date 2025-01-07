@@ -44,8 +44,8 @@ export class ChartService {
         .createHash('sha256')
         .update(typeAndTitle, 'utf8')
         .digest('hex');
-
-      await this.chartRepository.setChartIdx(idx, safeKey);
+      const idxWithLevel = idx.toString() + '@@' + data.level.toString();
+      await this.chartRepository.setChartIdx(idxWithLevel, safeKey);
     }
   }
 }
