@@ -15,10 +15,6 @@ export class ChartController {
     return new NullResponseDto();
   }
 
-  @Get('test')
-  async test() {
-    return this.chartService.testCache();
-  }
   /**
    * idx로 chart 데이터 가저오기
    */

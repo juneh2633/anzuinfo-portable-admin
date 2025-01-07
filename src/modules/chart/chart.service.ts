@@ -34,16 +34,6 @@ export class ChartService {
 
       const safeKey = encodeURIComponent(typeAndTitle);
       await this.chartRepository.setChartIdx(idx, safeKey);
-
-      const value = await this.redisService.get(safeKey);
-      console.log(safeKey, value);
     }
-  }
-
-  async testCache() {
-    const result = await this.redisService.set('test_key', 'test_value', 300); // 5분 TTL
-    console.log(result);
-    const value = await this.redisService.get('test_key');
-    return { key: 'test_key', value };
   }
 }
