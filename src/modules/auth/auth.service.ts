@@ -1,27 +1,31 @@
-import {
-  BadRequestException,
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { SignInDto } from './dto/request/auth.dto';
 import { compareSync, hashSync } from 'bcrypt';
 import { SignUpDto } from './dto/request/sign-up.dto';
 import { User } from './model/user.model';
+import { IdDuplicateException } from './exception/IdDuplicate.exception';
+import { AccountRepository } from '../account/repository/account.repository';
+import { SVDuplicateException } from './exception/SVDuplicate.exception';
+import { AccountWriteRepository } from './repository/account-write.repository';
+import { GetSdvxIdDto } from './dto/request/get-sdvx-id.dto';
+import { GetPwDto } from './dto/request/get-pw.dto';
+import { PwNotMatchException } from './exception/PwNotMatch.exception';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
+    private readonly accountRepository: AccountRepository,
+    private readonly accountWriteRepository: AccountWriteRepository,
   ) {}
 
   async signIn(signInDto: SignInDto): Promise<string> {
     const account = await this.prisma.account.findFirst({
       where: { id: signInDto.id, deletedAt: null },
     });
+
     const passwordMatch = compareSync(signInDto.pw, account.pw);
 
     if (!account || !passwordMatch) {
@@ -39,31 +43,42 @@ export class AuthService {
   }
 
   async signUp(signUpDto: SignUpDto): Promise<void> {
-    const [accountCheck] = await Promise.all([
-      this.prisma.account.findFirst({
-        where: { id: signUpDto.id, deletedAt: null },
-      }),
+    const [accountCheck, sdvxIdCheck] = await Promise.all([
+      this.accountRepository.selectAccountById(signUpDto.id),
+      this.accountRepository.selectAccountBySdvxId(signUpDto.sdvxId),
     ]);
-
+    if (signUpDto.password !== signUpDto.passwordCheck) {
+      throw new PwNotMatchException();
+    }
     if (accountCheck) {
-      throw new ConflictException('id duplicate');
+      throw new IdDuplicateException();
+    }
+    if (sdvxIdCheck) {
+      throw new SVDuplicateException();
     }
 
-    await this.prisma.account.create({
-      data: {
-        pw: hashSync(signUpDto.password, 1),
-        id: signUpDto.id,
-      },
-    });
+    await this.accountWriteRepository.createAccount(
+      signUpDto.id,
+      hashSync(signUpDto.password, 1),
+      signUpDto.sdvxId,
+    );
   }
-
+  async amendSV(getSdvxIdDto: GetSdvxIdDto, user: User): Promise<void> {
+    await this.accountWriteRepository.updateAccountSV(
+      user.idx,
+      getSdvxIdDto.sdvxId,
+    );
+  }
+  async amendPW(getPwDto: GetPwDto, user: User): Promise<void> {
+    if (getPwDto.password !== getPwDto.passwordCheck) {
+      throw new PwNotMatchException();
+    }
+    await this.accountWriteRepository.updateAccountPW(
+      user.idx,
+      hashSync(getPwDto.password),
+    );
+  }
   async withdraw(user: User) {
-    const now = Date();
-    await this.prisma.account.update({
-      where: { idx: user.idx },
-      data: {
-        deletedAt: now,
-      },
-    });
+    await this.accountWriteRepository.softDeleteAccount(user.idx);
   }
 }
