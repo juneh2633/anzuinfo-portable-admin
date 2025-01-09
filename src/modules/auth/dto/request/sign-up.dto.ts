@@ -17,6 +17,13 @@ export class SignUpDto {
   password: string;
 
   @IsString()
+  @ApiProperty({
+    description: '회원가입 비밀번호 체크',
+    default: 'asdf1234',
+  })
+  passwordCheck: string;
+
+  @IsString()
   @Matches(/^SV-\d{4}-\d{4}$/, {
     message: 'sdvxId must follow the format "SV-XXXX-XXXX" where X is a digit',
   })

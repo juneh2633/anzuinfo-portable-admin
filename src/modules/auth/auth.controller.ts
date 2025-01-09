@@ -1,10 +1,7 @@
 import {
-  BadRequestException,
   Body,
-  ConflictException,
   Controller,
   Delete,
-  ForbiddenException,
   Post,
   Put,
   UnauthorizedException,
@@ -22,6 +19,8 @@ import { ExceptionList } from 'src/common/decorator/exception-list.decorator';
 import { IdDuplicateException } from './exception/IdDuplicate.exception';
 import { SVDuplicateException } from './exception/SVDuplicate.exception';
 import { GetSdvxIdDto } from './dto/request/get-sdvx-id.dto';
+import { GetPwDto } from './dto/request/get-pw.dto';
+import { PwNotMatchException } from './exception/PwNotMatch.exception';
 
 @ApiTags('Auth API')
 @Controller('auth')
@@ -65,7 +64,7 @@ export class AuthController {
   /**
    * sv데이터 수정
    */
-  @Put('/')
+  @Put('/sv')
   @AuthCheck(1)
   @ExceptionList([])
   async changeSV(
@@ -73,6 +72,21 @@ export class AuthController {
     @Body() getSdvxIdDto: GetSdvxIdDto,
   ): Promise<NullResponseDto> {
     await this.authService.amendSV(getSdvxIdDto, user);
+
+    return new NullResponseDto();
+  }
+
+  /**
+   * pw 수정
+   */
+  @Put('/pw')
+  @AuthCheck(1)
+  @ExceptionList([new PwNotMatchException()])
+  async changePw(
+    @GetUser() user: User,
+    @Body() getPwDto: GetPwDto,
+  ): Promise<NullResponseDto> {
+    await this.authService.amendPW(getPwDto, user);
 
     return new NullResponseDto();
   }

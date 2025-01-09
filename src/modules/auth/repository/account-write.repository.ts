@@ -32,4 +32,13 @@ export class AccountWriteRepository {
       },
     });
   }
+
+  async updateAccountPW(userIdx: number, pw: string): Promise<void> {
+    await this.prismaService.account.update({
+      where: { idx: userIdx },
+      data: {
+        pw: pw,
+      },
+    });
+  }
 }

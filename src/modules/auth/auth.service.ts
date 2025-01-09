@@ -10,7 +10,8 @@ import { AccountRepository } from '../account/repository/account.repository';
 import { SVDuplicateException } from './exception/SVDuplicate.exception';
 import { AccountWriteRepository } from './repository/account-write.repository';
 import { GetSdvxIdDto } from './dto/request/get-sdvx-id.dto';
-import { NoUserException } from '../account/exception/no-user.exception';
+import { GetPwDto } from './dto/request/get-pw.dto';
+import { PwNotMatchException } from './exception/PwNotMatch.exception';
 @Injectable()
 export class AuthService {
   constructor(
@@ -24,6 +25,7 @@ export class AuthService {
     const account = await this.prisma.account.findFirst({
       where: { id: signInDto.id, deletedAt: null },
     });
+
     const passwordMatch = compareSync(signInDto.pw, account.pw);
 
     if (!account || !passwordMatch) {
@@ -45,7 +47,9 @@ export class AuthService {
       this.accountRepository.selectAccountById(signUpDto.id),
       this.accountRepository.selectAccountBySdvxId(signUpDto.sdvxId),
     ]);
-
+    if (signUpDto.password !== signUpDto.passwordCheck) {
+      throw new PwNotMatchException();
+    }
     if (accountCheck) {
       throw new IdDuplicateException();
     }
@@ -53,12 +57,6 @@ export class AuthService {
       throw new SVDuplicateException();
     }
 
-    await this.prisma.account.create({
-      data: {
-        pw: hashSync(signUpDto.password, 1),
-        id: signUpDto.id,
-      },
-    });
     await this.accountWriteRepository.createAccount(
       signUpDto.id,
       hashSync(signUpDto.password, 1),
@@ -71,7 +69,15 @@ export class AuthService {
       getSdvxIdDto.sdvxId,
     );
   }
-
+  async amendPW(getPwDto: GetPwDto, user: User): Promise<void> {
+    if (getPwDto.password !== getPwDto.passwordCheck) {
+      throw new PwNotMatchException();
+    }
+    await this.accountWriteRepository.updateAccountPW(
+      user.idx,
+      hashSync(getPwDto.password),
+    );
+  }
   async withdraw(user: User) {
     await this.accountWriteRepository.softDeleteAccount(user.idx);
   }
