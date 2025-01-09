@@ -4,6 +4,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ChartModule } from './modules/chart/chart.module';
 import { PlaydataModule } from './modules/playdata/playdata.module';
 import { ConfigModule } from '@nestjs/config';
+import { AccountModule } from './modules/account/account.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
     HealthcheckModule,
     ChartModule,
     PlaydataModule,
+    AccountModule,
   ],
   providers: [],
   controllers: [],

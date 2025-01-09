@@ -6,9 +6,10 @@ import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { PlaydataRepository } from './repository/playdata.repository';
 import { SongRepository } from './repository/song.repository';
 import { CommonModule } from 'src/common/common.module';
+import { AccountModule } from '../account/account.module';
 
 @Module({
-  imports: [RedisModule, PrismaModule, CommonModule],
+  imports: [RedisModule, PrismaModule, CommonModule, AccountModule],
   providers: [PlaydataService, PlaydataRepository, SongRepository],
   controllers: [PlaydataController],
 })
