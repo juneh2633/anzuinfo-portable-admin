@@ -15,17 +15,18 @@ import { NoPlaydataException } from './exception/no-playdata.exception';
 export class PlaydataController {
   constructor(private readonly playdataService: PlaydataService) {}
 
-  //   @Post('/')
-  //   async inputPlaydata(@Body() getDataDto:GetDataDto) {
-  //       const
-  //   }
-
+  /**
+   * 갱신코드 데이터 받는 api
+   */
   @Post('/')
   async inputPlaydata(@Body() getDataDto: GetDataDto) {
     await this.playdataService.postData(getDataDto);
     return { status: 'success', message: 'Data received successfully' };
   }
 
+  /**
+   * 로그인 유저 볼포스
+   */
   @Get('/volforce')
   @AuthCheck(1)
   async findVolforce(@GetUser() user: User): Promise<PlaydataDto> {
@@ -33,6 +34,9 @@ export class PlaydataController {
     return PlaydataDto.createResponse(user, data);
   }
 
+  /**
+   * 로그인 유저 차트 점수
+   */
   @Get('/chart/:chartIdx')
   @ExceptionList([new NoPlaydataException()])
   @AuthCheck(1)
