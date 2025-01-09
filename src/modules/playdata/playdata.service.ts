@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PlaydataRepository } from './repository/playdata.repository';
 import { GetDataDto } from './dto/request/get-data.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { SongRepository } from './repository/song.repository';
 import { RedisService } from 'src/common/redis/redis.service';
 import * as crypto from 'crypto';
 import { CommonService } from 'src/common/common.service';
@@ -14,7 +13,6 @@ import { NoUserException } from './exception/no-user.exception';
 export class PlaydataService {
   constructor(
     private readonly playdataRepository: PlaydataRepository,
-    private readonly songRepository: SongRepository,
     private readonly commonService: CommonService,
     private readonly prismaService: PrismaService,
     private readonly redisService: RedisService,
@@ -68,20 +66,8 @@ export class PlaydataService {
       }
       const [chartIdx, level] = chartIdxWithLevel.split('@@');
 
-      // if (!chartIdx) {
-      //   console.warn(`Redis에서 chartIdx를 찾을 수 없습니다: ${type}`);
-      //   console.log(title);
-      //   return null;
-      // }
       const rankIdx = this.commonService.getRankIdx(status);
-      // console.log(
-      //   chartIdx,
-      //   this.commonService.getVolforce(
-      //     parseInt(level, 10),
-      //     parseInt(score, 10),
-      //     rankIdx,
-      //   ),
-      // );
+
       return {
         accountIdx: user.idx,
         chartIdx: parseInt(chartIdx, 10),
