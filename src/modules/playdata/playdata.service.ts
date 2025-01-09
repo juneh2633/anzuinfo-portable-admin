@@ -22,7 +22,9 @@ export class PlaydataService {
 
   async postData(getDataDto: GetDataDto) {
     console.log(getDataDto.user);
-    const [sdvxId, x, y, z] = getDataDto.user.split('\t');
+    const [sdvxId, playerName, forcePoint, skillLevel, playCount] =
+      getDataDto.user.split('\t');
+
     const user = await this.accountRepository.selectAccountBySdvxId(sdvxId);
     if (user === null) {
       throw new NoUserException();
@@ -30,6 +32,7 @@ export class PlaydataService {
     console.log(user);
     const playdataPromises = getDataDto.tracks.map(async (track) => {
       const [title, type, status, score] = track.split('\t');
+
       const typeAndTitle = type + '____' + title;
 
       const safeKey = crypto
@@ -87,8 +90,16 @@ export class PlaydataService {
     const validPlaydata = playdata.filter((data) => data !== null);
 
     await this.playdataRepository.insertPlaydataList(validPlaydata);
+    await this.accountRepository.updateAccountPlaydata(
+      user.idx,
+      playerName,
+      parseInt(playCount, 10),
+      parseInt(forcePoint, 10),
+      skillLevel,
+    );
     console.log(`${validPlaydata.length}개의 데이터가 저장되었습니다.`);
   }
+
   async getVFTable(accountIdx: number): Promise<PlaydataWithChart[]> {
     const playdataList = await this.playdataRepository.selectVF(accountIdx);
     return playdataList.map((playdata) =>

@@ -25,4 +25,25 @@ export class AccountRepository {
     });
     return account;
   }
+
+  async updateAccountPlaydata(
+    userIdx: number,
+    playerName: string,
+    playCount: number,
+    vf: number,
+    skillLevel: string,
+  ): Promise<void> {
+    await this.prismaService.account.update({
+      where: {
+        idx: userIdx,
+      },
+      data: {
+        playCount: playCount,
+        playerName: playerName,
+        vf: vf,
+        skillLevel: skillLevel,
+        updateAt: new Date(),
+      },
+    });
+  }
 }
