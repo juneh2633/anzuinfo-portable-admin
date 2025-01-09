@@ -1,13 +1,14 @@
 import { Global, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { PrismaModule } from 'src/common/prisma/prisma.module';
 
 import jwtConfig from './config/jwt.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TokenService } from './token.service';
+import { AccountModule } from '../account/account.module';
+import { AccountWriteRepository } from './repository/account-write.repository';
 
 @Global()
 @Module({
@@ -18,8 +19,9 @@ import { TokenService } from './token.service';
       inject: [ConfigService],
     }),
     PrismaModule,
+    AccountModule,
   ],
-  providers: [AuthService, TokenService],
+  providers: [AuthService, TokenService, AccountWriteRepository],
   controllers: [AuthController],
   exports: [TokenService],
 })

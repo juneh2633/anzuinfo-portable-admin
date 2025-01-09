@@ -1,3 +1,3 @@
 export class NullResponseDto {
-  message: string = null;
+  message: string = 'success';
 }
