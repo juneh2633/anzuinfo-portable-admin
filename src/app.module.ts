@@ -5,9 +5,15 @@ import { ChartModule } from './modules/chart/chart.module';
 import { PlaydataModule } from './modules/playdata/playdata.module';
 import { ConfigModule } from '@nestjs/config';
 import { AccountModule } from './modules/account/account.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../static'),
+      serveRoot: '/static/',
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
