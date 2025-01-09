@@ -57,4 +57,22 @@ export class PlaydataRepository {
       take: 50,
     });
   }
+  async selectPlaydataByChart(
+    accountIdx: number,
+    chartIdx: number,
+  ): Promise<PlaydataWithChartAndSong | null> {
+    return await this.prismaService.playdata.findFirst({
+      where: {
+        accountIdx: accountIdx,
+        chartIdx: chartIdx,
+      },
+      include: {
+        chart: {
+          include: {
+            song: true,
+          },
+        },
+      },
+    });
+  }
 }

@@ -8,6 +8,7 @@ import { CommonService } from 'src/common/common.service';
 import { PlaydataWithChart } from './entity/PlaydataWithChart.entity';
 import { AccountRepository } from '../account/repository/account.repository';
 import { NoUserException } from './exception/no-user.exception';
+import { NoPlaydataException } from './exception/no-playdata.exception';
 
 @Injectable()
 export class PlaydataService {
@@ -88,9 +89,9 @@ export class PlaydataService {
     await this.playdataRepository.insertPlaydataList(validPlaydata);
     console.log(`${validPlaydata.length}개의 데이터가 저장되었습니다.`);
   }
-  async getVFTable(accountIdx: number) {
-    const rawData = await this.playdataRepository.selectVF(accountIdx);
-    return rawData.map((playdata) =>
+  async getVFTable(accountIdx: number): Promise<PlaydataWithChart[]> {
+    const playdataList = await this.playdataRepository.selectVF(accountIdx);
+    return playdataList.map((playdata) =>
       PlaydataWithChart.createDto(
         playdata.chart,
         playdata.chart.song,
@@ -98,8 +99,21 @@ export class PlaydataService {
       ),
     );
   }
-
-  async testPost() {
-    await this.playdataRepository.insertPlaydata(1, 1, 0, 1, 123, null);
+  async getPlaydataByChart(
+    accountIdx: number,
+    chartIdx: number,
+  ): Promise<PlaydataWithChart> {
+    const playdata = await this.playdataRepository.selectPlaydataByChart(
+      accountIdx,
+      chartIdx,
+    );
+    if (playdata === null) {
+      throw new NoPlaydataException();
+    }
+    return PlaydataWithChart.createDto(
+      playdata.chart,
+      playdata.chart.song,
+      playdata,
+    );
   }
 }
