@@ -1,9 +1,8 @@
 export class User {
   idx: number;
   id: String;
-  sdvxId: String;
-  createdAt: Date;
   vf: number;
-  playCount: number;
+  createdAt: Date;
+  updateAt: Date;
   rankIdx: number;
 }

@@ -37,8 +37,8 @@ export class AuthService {
       id: account.id,
       vf: account.vf,
       rankIdx: 1,
-      playCount: account.playCount,
       createdAt: account.createdAt,
+      updateAt: account.updateAt,
     });
   }
 

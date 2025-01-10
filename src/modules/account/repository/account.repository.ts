@@ -6,6 +6,15 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 export class AccountRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async selectAccountByIdx(idx: number): Promise<Account | null> {
+    const account = await this.prismaService.account.findFirst({
+      where: {
+        idx: idx,
+        deletedAt: null,
+      },
+    });
+    return account;
+  }
   async selectAccountById(id: string): Promise<Account | null> {
     const account = await this.prismaService.account.findFirst({
       where: {
@@ -32,6 +41,7 @@ export class AccountRepository {
     playCount: number,
     vf: number,
     skillLevel: string,
+    updateAt: Date,
   ): Promise<void> {
     await this.prismaService.account.update({
       where: {
@@ -42,7 +52,7 @@ export class AccountRepository {
         playerName: playerName,
         vf: vf,
         skillLevel: skillLevel,
-        updateAt: new Date(),
+        updateAt: updateAt,
       },
     });
   }

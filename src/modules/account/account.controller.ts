@@ -16,8 +16,17 @@ export class AccountController {
    */
   @Post('/check')
   async checkUser(@Body() getSdvxIdDto: GetSdvxIdDto) {
-    console.log(getSdvxIdDto);
-    await this.accountService.findUser(getSdvxIdDto);
+    await this.accountService.findUserBySdvxId(getSdvxIdDto);
     return NullResponseDto;
+  }
+
+  /**
+   * 내 정보
+   */
+  @Get('/')
+  @AuthCheck(1)
+  async getAccount(@GetUser() user: User) {
+    const account = await this.accountService.findUser(user.idx);
+    return account;
   }
 }
