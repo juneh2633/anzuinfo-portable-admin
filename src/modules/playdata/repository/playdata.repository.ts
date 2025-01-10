@@ -39,10 +39,14 @@ export class PlaydataRepository {
     });
   }
 
-  async selectVF(accountIdx: number): Promise<PlaydataWithChartAndSong[]> {
+  async selectVF(
+    accountIdx: number,
+    updateAt: Date,
+  ): Promise<PlaydataWithChartAndSong[]> {
     return await this.prismaService.playdata.findMany({
       where: {
         accountIdx: accountIdx,
+        createdAt: updateAt,
       },
       include: {
         chart: {
@@ -59,12 +63,14 @@ export class PlaydataRepository {
   }
   async selectPlaydataByChart(
     accountIdx: number,
+    updateAt: Date,
     chartIdx: number,
   ): Promise<PlaydataWithChartAndSong | null> {
     return await this.prismaService.playdata.findFirst({
       where: {
         accountIdx: accountIdx,
         chartIdx: chartIdx,
+        createdAt: updateAt,
       },
       include: {
         chart: {
@@ -72,6 +78,33 @@ export class PlaydataRepository {
             song: true,
           },
         },
+      },
+    });
+  }
+
+  async selectPlaydataByLevel(
+    accountIdx: number,
+    updateAt: Date,
+    level: number,
+  ): Promise<PlaydataWithChartAndSong[]> {
+    return await this.prismaService.playdata.findMany({
+      where: {
+        accountIdx: accountIdx,
+        createdAt: updateAt,
+        chart: {
+          level: level,
+        },
+      },
+
+      include: {
+        chart: {
+          include: {
+            song: true,
+          },
+        },
+      },
+      orderBy: {
+        score: 'desc',
       },
     });
   }

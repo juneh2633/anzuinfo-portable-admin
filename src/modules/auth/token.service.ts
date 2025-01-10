@@ -17,10 +17,9 @@ export class TokenService {
         return {
           idx: 1,
           id: null,
-          sdvxId: null,
           createdAt: null,
+          updateAt: null,
           vf: null,
-          playCount: null,
           rankIdx: 0,
         };
       } else {
@@ -33,10 +32,9 @@ export class TokenService {
     return {
       idx: 1,
       id: null,
-      sdvxId: null,
       createdAt: null,
+      updateAt: null,
       vf: null,
-      playCount: null,
       rankIdx: 0,
     };
   }

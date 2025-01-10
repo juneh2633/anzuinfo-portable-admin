@@ -10,6 +10,6 @@ import { AccountService } from './account.service';
   imports: [PrismaModule, RedisModule],
   controllers: [AccountController],
   providers: [AccountRepository, AccountService],
-  exports: [AccountRepository],
+  exports: [AccountRepository, AccountService],
 })
 export class AccountModule {}

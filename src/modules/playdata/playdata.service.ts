@@ -9,6 +9,8 @@ import { PlaydataWithChart } from './entity/PlaydataWithChart.entity';
 import { AccountRepository } from '../account/repository/account.repository';
 import { NoUserException } from './exception/no-user.exception';
 import { NoPlaydataException } from './exception/no-playdata.exception';
+import { User } from '../auth/model/user.model';
+import { AccountService } from '../account/account.service';
 
 @Injectable()
 export class PlaydataService {
@@ -18,13 +20,14 @@ export class PlaydataService {
     private readonly prismaService: PrismaService,
     private readonly redisService: RedisService,
     private readonly accountRepository: AccountRepository,
+    private readonly accountService: AccountService,
   ) {}
 
   async postData(getDataDto: GetDataDto) {
     console.log(getDataDto.user);
     const [sdvxId, playerName, forcePoint, skillLevel, playCount] =
       getDataDto.user.split('\t');
-
+    const now = new Date();
     const user = await this.accountRepository.selectAccountBySdvxId(sdvxId);
     if (user === null) {
       throw new NoUserException();
@@ -82,13 +85,13 @@ export class PlaydataService {
         ),
         rank: rankIdx,
         score: parseInt(score, 10),
+        createdAt: now,
       };
     });
 
     const playdata = await Promise.all(playdataPromises);
 
     const validPlaydata = playdata.filter((data) => data !== null);
-
     await this.playdataRepository.insertPlaydataList(validPlaydata);
     await this.accountRepository.updateAccountPlaydata(
       user.idx,
@@ -96,12 +99,17 @@ export class PlaydataService {
       parseInt(playCount, 10),
       parseInt(forcePoint, 10),
       skillLevel,
+      now,
     );
     console.log(`${validPlaydata.length}개의 데이터가 저장되었습니다.`);
   }
 
-  async getVFTable(accountIdx: number): Promise<PlaydataWithChart[]> {
-    const playdataList = await this.playdataRepository.selectVF(accountIdx);
+  async getVFTable(account: User): Promise<PlaydataWithChart[]> {
+    const updateAt = await this.accountService.findUserUpateAt(account.idx);
+    const playdataList = await this.playdataRepository.selectVF(
+      account.idx,
+      updateAt,
+    );
     return playdataList.map((playdata) =>
       PlaydataWithChart.createDto(
         playdata.chart,
@@ -111,11 +119,13 @@ export class PlaydataService {
     );
   }
   async getPlaydataByChart(
-    accountIdx: number,
+    account: User,
     chartIdx: number,
   ): Promise<PlaydataWithChart> {
+    const updateAt = await this.accountService.findUserUpateAt(account.idx);
     const playdata = await this.playdataRepository.selectPlaydataByChart(
-      accountIdx,
+      account.idx,
+      updateAt,
       chartIdx,
     );
     if (playdata === null) {
@@ -125,6 +135,25 @@ export class PlaydataService {
       playdata.chart,
       playdata.chart.song,
       playdata,
+    );
+  }
+  async getPlaydataByLevel(
+    account: User,
+    level: number,
+  ): Promise<PlaydataWithChart[]> {
+    const updateAt = await this.accountService.findUserUpateAt(account.idx);
+    const playdataList = await this.playdataRepository.selectPlaydataByLevel(
+      account.idx,
+      updateAt,
+      level,
+    );
+    console.log(playdataList);
+    return playdataList.map((playdata) =>
+      PlaydataWithChart.createDto(
+        playdata.chart,
+        playdata.chart.song,
+        playdata,
+      ),
     );
   }
 }
