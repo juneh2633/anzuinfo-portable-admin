@@ -20,7 +20,7 @@ export class AccountPickEntity {
       playerName: account.playerName,
       playCount: account.playCount,
       vf: account.vf,
-      skillLevel: account.createdAt,
+      skillLevel: account.skillLevel,
       updateAt: account.updateAt,
       createdAt: account.createdAt,
     });
