@@ -10,7 +10,7 @@ import {
 import { ChartService } from './chart.service';
 import { ExceptionList } from 'src/common/decorator/exception-list.decorator';
 import { ChartDto } from './dto/response/chart.reponse.dto';
-import { NullResponseDto } from 'src/common/dto/null-response.dto';
+import { SuccessResponseDto } from 'src/common/dto/Success-response.dto';
 import { AuthCheck } from 'src/common/decorator/auth-check.decorator';
 
 @Controller('chart')
@@ -24,7 +24,7 @@ export class ChartController {
   @ExceptionList([])
   async cacheChart() {
     const chart = await this.chartService.cacheChart();
-    return new NullResponseDto();
+    return new SuccessResponseDto();
   }
 
   /**

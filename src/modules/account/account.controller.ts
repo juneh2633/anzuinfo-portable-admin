@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Post, Put } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { GetSdvxIdDto } from './dto/request/get-sdvx-id.dto';
-import { NullResponseDto } from 'src/common/dto/null-response.dto';
+import { SuccessResponseDto } from 'src/common/dto/Success-response.dto';
 import { AuthCheck } from 'src/common/decorator/auth-check.decorator';
 import { ExceptionList } from 'src/common/decorator/exception-list.decorator';
 import { GetUser } from 'src/common/decorator/get-user.decorator';
 import { User } from '../auth/model/user.model';
+import { AccountResponseDto } from './dto/response/account.response.dto';
 
 @Controller('account')
 export class AccountController {
@@ -15,9 +16,11 @@ export class AccountController {
    * sv 존재여부 확인
    */
   @Post('/check')
-  async checkUser(@Body() getSdvxIdDto: GetSdvxIdDto) {
+  async checkUser(
+    @Body() getSdvxIdDto: GetSdvxIdDto,
+  ): Promise<SuccessResponseDto> {
     await this.accountService.findUserBySdvxId(getSdvxIdDto);
-    return NullResponseDto;
+    return new SuccessResponseDto();
   }
 
   /**
@@ -25,8 +28,8 @@ export class AccountController {
    */
   @Get('/')
   @AuthCheck(1)
-  async getAccount(@GetUser() user: User) {
+  async getAccount(@GetUser() user: User): Promise<AccountResponseDto> {
     const account = await this.accountService.findUser(user.idx);
-    return account;
+    return AccountResponseDto.createResponse(account);
   }
 }

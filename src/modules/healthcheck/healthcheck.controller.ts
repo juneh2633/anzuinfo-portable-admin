@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { NullResponseDto } from 'src/common/dto/null-response.dto';
+import { SuccessResponseDto } from 'src/common/dto/Success-response.dto';
 @ApiTags('Healthcheck API')
 @Controller('healthcheck')
 export class HealthcheckController {
@@ -8,7 +8,7 @@ export class HealthcheckController {
    * healthcheck
    */
   @Get('/')
-  async healthcheck(): Promise<NullResponseDto> {
-    return new NullResponseDto();
+  async healthcheck(): Promise<SuccessResponseDto> {
+    return new SuccessResponseDto();
   }
 }

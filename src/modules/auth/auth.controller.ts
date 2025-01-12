@@ -11,7 +11,7 @@ import { SignInDto } from './dto/request/auth.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { TokenResponseDto } from './dto/response/token.dto';
 import { SignUpDto } from './dto/request/sign-up.dto';
-import { NullResponseDto } from 'src/common/dto/null-response.dto';
+import { SuccessResponseDto } from 'src/common/dto/Success-response.dto';
 import { User } from './model/user.model';
 import { GetUser } from 'src/common/decorator/get-user.decorator';
 import { AuthCheck } from 'src/common/decorator/auth-check.decorator';
@@ -45,10 +45,10 @@ export class AuthController {
    */
   @Post('/')
   @ExceptionList([new IdDuplicateException(), new SVDuplicateException()])
-  async signUp(@Body() signUpDto: SignUpDto): Promise<NullResponseDto> {
+  async signUp(@Body() signUpDto: SignUpDto): Promise<SuccessResponseDto> {
     await this.authService.signUp(signUpDto);
 
-    return new NullResponseDto();
+    return new SuccessResponseDto();
   }
 
   /**
@@ -56,10 +56,10 @@ export class AuthController {
    */
   @Delete('/')
   @AuthCheck(1)
-  async withdrawAccount(@GetUser() user: User): Promise<NullResponseDto> {
+  async withdrawAccount(@GetUser() user: User): Promise<SuccessResponseDto> {
     await this.authService.withdraw(user);
 
-    return new NullResponseDto();
+    return new SuccessResponseDto();
   }
   /**
    * sv데이터 수정
@@ -70,10 +70,10 @@ export class AuthController {
   async changeSV(
     @GetUser() user: User,
     @Body() getSdvxIdDto: GetSdvxIdDto,
-  ): Promise<NullResponseDto> {
+  ): Promise<SuccessResponseDto> {
     await this.authService.amendSV(getSdvxIdDto, user);
 
-    return new NullResponseDto();
+    return new SuccessResponseDto();
   }
 
   /**
@@ -85,9 +85,9 @@ export class AuthController {
   async changePw(
     @GetUser() user: User,
     @Body() getPwDto: GetPwDto,
-  ): Promise<NullResponseDto> {
+  ): Promise<SuccessResponseDto> {
     await this.authService.amendPW(getPwDto, user);
 
-    return new NullResponseDto();
+    return new SuccessResponseDto();
   }
 }

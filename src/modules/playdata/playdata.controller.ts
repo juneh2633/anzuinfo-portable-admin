@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { PlaydataService } from './playdata.service';
 import { ApiTags } from '@nestjs/swagger';
 import { GetDataDto } from './dto/request/get-data.dto';
-import { NullResponseDto } from 'src/common/dto/null-response.dto';
+import { SuccessResponseDto } from 'src/common/dto/Success-response.dto';
 import { GetUser } from 'src/common/decorator/get-user.decorator';
 import { AuthCheck } from 'src/common/decorator/auth-check.decorator';
 import { User } from '../auth/model/user.model';
