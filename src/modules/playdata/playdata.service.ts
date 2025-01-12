@@ -97,7 +97,7 @@ export class PlaydataService {
       user.idx,
       playerName,
       parseInt(playCount, 10),
-      parseInt(forcePoint, 10),
+      parseInt(forcePoint, 10)*100,
       skillLevel,
       now,
     );
