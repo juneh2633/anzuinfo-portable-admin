@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Playdata, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 
 import { PlaydataWithChartAndSong } from '../model/playdata-chart-and-song.model';
+import { PlaydataUser } from '../model/playdata-user.model';
 interface playdata {
   accountIdx: number;
   chartIdx: number;
@@ -39,21 +40,11 @@ export class PlaydataRepository {
     });
   }
 
-  async selectVF(
-    accountIdx: number,
-    updateAt: Date,
-  ): Promise<PlaydataWithChartAndSong[]> {
+  async selectVF(accountIdx: number, updateAt: Date): Promise<Playdata[]> {
     return await this.prismaService.playdata.findMany({
       where: {
         accountIdx: accountIdx,
         createdAt: updateAt,
-      },
-      include: {
-        chart: {
-          include: {
-            song: true,
-          },
-        },
       },
       orderBy: {
         chartVf: 'desc',
@@ -65,19 +56,12 @@ export class PlaydataRepository {
     accountIdx: number,
     updateAt: Date,
     chartIdx: number,
-  ): Promise<PlaydataWithChartAndSong | null> {
+  ): Promise<Playdata | null> {
     return await this.prismaService.playdata.findFirst({
       where: {
         accountIdx: accountIdx,
         chartIdx: chartIdx,
         createdAt: updateAt,
-      },
-      include: {
-        chart: {
-          include: {
-            song: true,
-          },
-        },
       },
     });
   }
@@ -86,7 +70,7 @@ export class PlaydataRepository {
     accountIdx: number,
     updateAt: Date,
     level: number,
-  ): Promise<PlaydataWithChartAndSong[]> {
+  ): Promise<Playdata[]> {
     return await this.prismaService.playdata.findMany({
       where: {
         accountIdx: accountIdx,
@@ -96,10 +80,31 @@ export class PlaydataRepository {
         },
       },
 
+      orderBy: {
+        score: 'desc',
+      },
+    });
+  }
+
+  async selectPlaydataRankingByChart(
+    chartIdx: number,
+  ): Promise<PlaydataUser[]> {
+    return await this.prismaService.playdata.findMany({
+      where: {
+        chartIdx: chartIdx,
+        account: {
+          deletedAt: null,
+        },
+      },
       include: {
-        chart: {
-          include: {
-            song: true,
+        account: {
+          select: {
+            idx: true,
+            sdvxId: true,
+            playerName: true,
+            skillLevel: true,
+            updateAt: true,
+            vf: true,
           },
         },
       },

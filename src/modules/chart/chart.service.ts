@@ -52,9 +52,13 @@ export class ChartService {
     }
   }
 
-  async findSongAll(): Promise<any> {
+  async findSongAll(): Promise<SongWithChartEntity[]> {
     const songList = await this.songRepository.selectSongAll();
-    //    return songList;
+
+    if (songList === null || songList.length === 0) {
+      throw new NoChartException();
+    }
+
     return SongWithChartEntity.createMany(songList);
   }
 }

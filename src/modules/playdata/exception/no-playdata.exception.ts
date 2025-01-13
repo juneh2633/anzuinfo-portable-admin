@@ -1,7 +1,8 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
+import { ErrorCodes } from 'src/common/lib/error-code';
 
 export class NoPlaydataException extends HttpException {
   constructor() {
-    super('no Playdata', 404);
+    super('no Playdata', ErrorCodes.NO_PLAYDATA);
   }
 }

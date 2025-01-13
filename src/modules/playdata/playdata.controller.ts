@@ -30,37 +30,47 @@ export class PlaydataController {
    */
   @Get('/volforce')
   @AuthCheck(1)
-  async findVolforce(@GetUser() user: User): Promise<PlaydataDto> {
-    const data = await this.playdataService.getVFTable(user);
+  async getVolforce(@GetUser() user: User): Promise<PlaydataDto> {
+    const data = await this.playdataService.findVFTable(user);
     return PlaydataDto.createResponse(user, data);
   }
 
   /**
-   * 로그인 유저 차트 점수
+   * 로그인 유저 해당 차트 기록
    */
   @Get('/chart/:chartIdx')
   @ExceptionList([new NoPlaydataException()])
   @AuthCheck(1)
-  async findPlaydataByChart(
+  async getPlaydataByChart(
     @GetUser() user: User,
     @Param('chartIdx') chartIdx: number,
   ): Promise<PlaydataDto> {
-    const data = await this.playdataService.getPlaydataByChart(user, chartIdx);
+    const data = await this.playdataService.findPlaydataByChart(user, chartIdx);
     return PlaydataDto.createResponse(user, data);
   }
-
   /**
-   * 로그인 유저 차트 점수
+   * 차트 유저 랭킹
+   */
+  @Get('/rank/chart/:chartIdx')
+  @ExceptionList([new NoPlaydataException()])
+  async getPlaydataRankingByChart(
+    @Param('chartIdx') chartIdx: number,
+  ): Promise<PlaydataDto> {
+    const data = await this.playdataService.findPlaydataRanking(chartIdx);
+    return PlaydataDto.createResponse(null, data);
+  }
+  /**
+   * 로그인 유저 해당 레벨 기록
    */
   @Get('/level/:level')
   @ExceptionList([new NoPlaydataException()])
   @AuthCheck(1)
-  async findPlaydataByLevel(
+  async getPlaydataByLevel(
     @GetUser() user: User,
     @Param()
     getByLevelDto: GetByLevelDto,
   ): Promise<PlaydataDto> {
-    const data = await this.playdataService.getPlaydataByLevel(
+    const data = await this.playdataService.findPlaydataByLevel(
       user,
       getByLevelDto.level,
     );

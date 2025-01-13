@@ -12,6 +12,7 @@ import { ExceptionList } from 'src/common/decorator/exception-list.decorator';
 import { ChartDto } from './dto/response/chart.reponse.dto';
 import { SuccessResponseDto } from 'src/common/dto/Success-response.dto';
 import { AuthCheck } from 'src/common/decorator/auth-check.decorator';
+import { NoChartException } from './exception/no-chart.exception';
 
 @Controller('chart')
 export class ChartController {
@@ -30,7 +31,7 @@ export class ChartController {
    * 곡 전체 가저오기(swagger 사용금지)
    */
   @Get('/all')
-  @ExceptionList([])
+  @ExceptionList([new NoChartException()])
   async getSongALl(): Promise<ChartDto> {
     const data = await this.chartService.findSongAll();
     return ChartDto.createResponse(data);
@@ -40,7 +41,7 @@ export class ChartController {
    * idx로 chart 데이터 가저오기
    */
   @Get('/:chartIdx')
-  @ExceptionList([])
+  @ExceptionList([new NoChartException()])
   async getChartByIdx(@Param('chartIdx', ParseIntPipe) chartIdx: number) {
     const chart = await this.chartService.findChartByIdx(chartIdx);
     return ChartDto.createResponse(chart);

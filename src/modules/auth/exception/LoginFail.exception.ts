@@ -1,8 +1,8 @@
 import { HttpException } from '@nestjs/common';
 import { ErrorCodes } from 'src/common/lib/error-code';
 
-export class NoChartException extends HttpException {
+export class LoginFailException extends HttpException {
   constructor() {
-    super('no chart', ErrorCodes.NO_CHART);
+    super('login fail', ErrorCodes.LOGIN_FAIL);
   }
 }
