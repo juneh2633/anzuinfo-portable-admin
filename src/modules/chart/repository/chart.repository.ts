@@ -42,6 +42,10 @@ export class ChartRepository {
     });
     return chartList;
   }
+
+  async selectChartAll(): Promise<Chart[]> {
+    return await this.prismaService.chart.findMany({});
+  }
   async setChartIdx(idxWithLevel: string, typeAndTitle: string): Promise<void> {
     await this.redisService.set(typeAndTitle, idxWithLevel);
   }

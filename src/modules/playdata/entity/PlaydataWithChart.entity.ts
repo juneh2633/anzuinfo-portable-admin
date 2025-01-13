@@ -1,6 +1,6 @@
 import { Chart, Playdata, Song } from '@prisma/client';
 
-export class PlaydataWithChart {
+export class PlaydataWithChartEntity {
   chartIdx: number;
   songIdx: number;
   title: string;
@@ -19,7 +19,7 @@ export class PlaydataWithChart {
     songDao: Song,
     playdataDao: Playdata,
   ) {
-    return new PlaydataWithChart({
+    return new PlaydataWithChartEntity({
       chartIdx: chartDao.idx,
       songIdx: chartDao.songIdx,
       level: chartDao.level,
