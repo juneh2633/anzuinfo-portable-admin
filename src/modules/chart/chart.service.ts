@@ -52,7 +52,7 @@ export class ChartService {
     }
   }
 
-  async findSongAll(): Promise<any> {
+  async findSongAll(): Promise<SongWithChartEntity[]> {
     const songList = await this.songRepository.selectSongAll();
 
     if (songList === null || songList.length === 0) {
