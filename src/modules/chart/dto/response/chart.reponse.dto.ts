@@ -1,13 +1,13 @@
 import { ChartWithRadarEntity } from '../../entity/ChartWithRadar.entity';
 
-export class ChartDto {
+export class ChartResponseDto {
   data: ChartWithRadarEntity | ChartWithRadarEntity[];
   constructor(data: any) {
     Object.assign(this, data);
   }
 
   static createResponse(data: any) {
-    return new ChartDto({
+    return new ChartResponseDto({
       data: data,
     });
   }

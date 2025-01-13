@@ -5,14 +5,17 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { ChartService } from './chart.service';
 import { ExceptionList } from 'src/common/decorator/exception-list.decorator';
-import { ChartDto } from './dto/response/chart.reponse.dto';
+import { ChartResponseDto } from './dto/response/chart.reponse.dto';
 import { SuccessResponseDto } from 'src/common/dto/Success-response.dto';
 import { AuthCheck } from 'src/common/decorator/auth-check.decorator';
 import { NoChartException } from './exception/no-chart.exception';
+import { GetVersionDto } from './dto/request/get-version.dto';
+import { VersionResponseDto } from './dto/response/version.response.dto';
 
 @Controller('chart')
 export class ChartController {
@@ -32,9 +35,33 @@ export class ChartController {
    */
   @Get('/all')
   @ExceptionList([new NoChartException()])
-  async getSongALl(): Promise<ChartDto> {
+  async getSongALl(): Promise<ChartResponseDto> {
     const data = await this.chartService.findSongAll();
-    return ChartDto.createResponse(data);
+    return ChartResponseDto.createResponse(data);
+  }
+
+  /**
+   * 버전 확인
+   */
+  @Get('/version')
+  @ExceptionList([])
+  async getVersion(
+    @Query() getVersionDto: GetVersionDto,
+  ): Promise<VersionResponseDto> {
+    const data = await this.chartService.findVersion(getVersionDto.version);
+    return VersionResponseDto.createResponse(data);
+  }
+
+  /**
+   * 버전 번호 변경
+   */
+  @Put('/version')
+  @ExceptionList([])
+  async setVersion(
+    @Query() getVersionDto: GetVersionDto,
+  ): Promise<SuccessResponseDto> {
+    const data = await this.chartService.insertVersion(getVersionDto.version);
+    return new SuccessResponseDto();
   }
 
   /**
@@ -44,6 +71,6 @@ export class ChartController {
   @ExceptionList([new NoChartException()])
   async getChartByIdx(@Param('chartIdx', ParseIntPipe) chartIdx: number) {
     const chart = await this.chartService.findChartByIdx(chartIdx);
-    return ChartDto.createResponse(chart);
+    return ChartResponseDto.createResponse(chart);
   }
 }

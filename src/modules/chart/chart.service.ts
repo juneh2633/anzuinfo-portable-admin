@@ -7,12 +7,12 @@ import { RedisService } from 'src/common/redis/redis.service';
 import * as crypto from 'crypto';
 import { SongWithChartEntity } from './entity/SongWithChart.entity';
 import { SongRepository } from './repository/song.repository';
+import { VersionEntity } from './entity/Version.entity';
 
 @Injectable()
 export class ChartService {
   constructor(
     private readonly chartRepository: ChartRepository,
-    private readonly redisService: RedisService,
     private readonly radarRepository: RadarRepository,
     private readonly songRepository: SongRepository,
   ) {}
@@ -60,5 +60,18 @@ export class ChartService {
     }
 
     return SongWithChartEntity.createMany(songList);
+  }
+
+  async findVersion(version: string): Promise<VersionEntity> {
+    const curVersion = await this.songRepository.getDataVersion();
+    let check = true;
+    if (curVersion !== version) {
+      check = false;
+    }
+    return VersionEntity.createDto(curVersion, check);
+  }
+
+  async insertVersion(version: string): Promise<void> {
+    await this.songRepository.setDataVersion(version);
   }
 }
