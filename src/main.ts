@@ -5,12 +5,21 @@ import * as dotenv from 'dotenv';
 
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpErrorFilter } from './common/filter/HttpErrorFilter';
+import * as expressBasicAuth from 'express-basic-auth';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // const prismaService = app.get(PrismaService);
   // await prismaService.enableShutdownHooks(app);
-
+  app.use(
+    '/api',
+    expressBasicAuth({
+      challenge: true,
+      users: {
+        [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
+      },
+    }),
+  );
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

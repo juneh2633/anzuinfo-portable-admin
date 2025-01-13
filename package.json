@@ -40,6 +40,7 @@
     "cross-spawn": "^7.0.6",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
+    "express-basic-auth": "^1.2.1",
     "ioredis": "^5.4.2",
     "jsonwebtoken": "^9.0.2",
     "reflect-metadata": "^0.2.0",
