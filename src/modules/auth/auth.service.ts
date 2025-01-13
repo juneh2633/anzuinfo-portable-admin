@@ -11,6 +11,7 @@ import { SVDuplicateException } from './exception/SVDuplicate.exception';
 import { AccountWriteRepository } from './repository/account-write.repository';
 import { GetSdvxIdDto } from './dto/request/get-sdvx-id.dto';
 import { GetPwDto } from './dto/request/get-pw.dto';
+import { LoginFailException } from './exception/LoginFail.exception';
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,7 +29,7 @@ export class AuthService {
     const passwordMatch = compareSync(signInDto.pw, account.pw);
 
     if (!account || !passwordMatch) {
-      throw new UnauthorizedException('login fail');
+      throw new LoginFailException();
     }
 
     return await this.jwtService.signAsync({

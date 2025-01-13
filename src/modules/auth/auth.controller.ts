@@ -20,7 +20,7 @@ import { IdDuplicateException } from './exception/IdDuplicate.exception';
 import { SVDuplicateException } from './exception/SVDuplicate.exception';
 import { GetSdvxIdDto } from './dto/request/get-sdvx-id.dto';
 import { GetPwDto } from './dto/request/get-pw.dto';
-import { PwNotMatchException } from './exception/PwNotMatch.exception';
+import { LoginFailException } from './exception/LoginFail.exception';
 
 @ApiTags('Auth API')
 @Controller('auth')
@@ -31,7 +31,7 @@ export class AuthController {
    * 로그인
    */
   @Post('/login')
-  @ExceptionList([new UnauthorizedException('login fail')])
+  @ExceptionList([new LoginFailException()])
   async signIn(@Body() signInDto: SignInDto): Promise<TokenResponseDto> {
     const accessToken = await this.authService.signIn(signInDto);
 
@@ -81,7 +81,7 @@ export class AuthController {
    */
   @Put('/pw')
   @AuthCheck(1)
-  @ExceptionList([new PwNotMatchException()])
+  @ExceptionList([])
   async changePw(
     @GetUser() user: User,
     @Body() getPwDto: GetPwDto,
