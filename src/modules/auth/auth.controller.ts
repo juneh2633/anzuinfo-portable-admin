@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Patch,
   Post,
   Put,
   UnauthorizedException,
@@ -64,7 +65,7 @@ export class AuthController {
   /**
    * sv데이터 수정
    */
-  @Put('/sv')
+  @Patch('/sv')
   @AuthCheck(1)
   @ExceptionList([])
   async changeSV(
@@ -79,7 +80,7 @@ export class AuthController {
   /**
    * pw 수정
    */
-  @Put('/pw')
+  @Patch('/pw')
   @AuthCheck(1)
   @ExceptionList([])
   async changePw(
