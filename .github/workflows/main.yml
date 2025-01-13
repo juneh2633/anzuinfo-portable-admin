@@ -31,7 +31,9 @@ jobs:
           script: |
             cd /home/ubuntu/anzu
             pm2 stop all || true
-            git pull origin main
+            git config pull.rebase false  
+            git config rebase.autoStash true  
+            git pull
             pm2 kill || true
             npx prisma generate
             npm i --legacy-peer-deps
