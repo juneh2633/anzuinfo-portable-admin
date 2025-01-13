@@ -3,6 +3,7 @@ import { Playdata, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 
 import { PlaydataWithChartAndSong } from '../model/playdata-chart-and-song.model';
+import { PlaydataUser } from '../model/playdata-user.model';
 interface playdata {
   accountIdx: number;
   chartIdx: number;
@@ -79,6 +80,34 @@ export class PlaydataRepository {
         },
       },
 
+      orderBy: {
+        score: 'desc',
+      },
+    });
+  }
+
+  async selectPlaydataRankingByChart(
+    chartIdx: number,
+  ): Promise<PlaydataUser[]> {
+    return await this.prismaService.playdata.findMany({
+      where: {
+        chartIdx: chartIdx,
+        account: {
+          deletedAt: null,
+        },
+      },
+      include: {
+        account: {
+          select: {
+            idx: true,
+            sdvxId: true,
+            playerName: true,
+            skillLevel: true,
+            updateAt: true,
+            vf: true,
+          },
+        },
+      },
       orderBy: {
         score: 'desc',
       },

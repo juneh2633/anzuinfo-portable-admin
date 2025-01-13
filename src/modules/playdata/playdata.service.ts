@@ -105,7 +105,7 @@ export class PlaydataService {
     console.log(`${validPlaydata.length}개의 데이터가 저장되었습니다.`);
   }
 
-  async getVFTable(account: User): Promise<PlaydataEntity[]> {
+  async findVFTable(account: User): Promise<PlaydataEntity[]> {
     const updateAt = await this.accountService.findUserUpateAt(account.idx);
     const playdataList = await this.playdataRepository.selectVF(
       account.idx,
@@ -114,7 +114,7 @@ export class PlaydataService {
     return playdataList.map((playdata) => PlaydataEntity.createDto(playdata));
   }
 
-  async getPlaydataByChart(
+  async findPlaydataByChart(
     account: User,
     chartIdx: number,
   ): Promise<PlaydataEntity> {
@@ -130,7 +130,7 @@ export class PlaydataService {
     return PlaydataEntity.createDto(playdata);
   }
 
-  async getPlaydataByLevel(
+  async findPlaydataByLevel(
     account: User,
     level: number,
   ): Promise<PlaydataEntity[]> {
@@ -146,5 +146,27 @@ export class PlaydataService {
     }
 
     return playdataList.map((playdata) => PlaydataEntity.createDto(playdata));
+  }
+
+  async findPlaydataRanking(chartIdx: number) {
+    const playdataList =
+      await this.playdataRepository.selectPlaydataRankingByChart(chartIdx);
+    const uniqueData = Object.values(
+      playdataList.reduce(
+        (acc, current) => {
+          const accountIdx = current.accountIdx;
+          if (
+            !acc[accountIdx] ||
+            new Date(current.account.updateAt) >
+              new Date(acc[accountIdx].account.updateAt)
+          ) {
+            acc[accountIdx] = current;
+          }
+          return acc;
+        },
+        {} as Record<number, (typeof playdataList)[0]>,
+      ),
+    );
+    return uniqueData;
   }
 }

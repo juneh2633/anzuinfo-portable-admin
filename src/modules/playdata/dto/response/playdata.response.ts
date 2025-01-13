@@ -10,7 +10,7 @@ export class PlaydataDto {
   static createResponse(user: User, data: any): PlaydataDto {
     return new PlaydataDto({
       data: data,
-      authStatus: PlaydataDto.setAuthState(user.rankIdx),
+      authStatus: PlaydataDto.setAuthState(user !== null ? user.rankIdx : 0),
     });
   }
   private static setAuthState(rankInd: number): 'expired' | 'false' | 'true' {
