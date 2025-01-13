@@ -11,7 +11,6 @@ import { SVDuplicateException } from './exception/SVDuplicate.exception';
 import { AccountWriteRepository } from './repository/account-write.repository';
 import { GetSdvxIdDto } from './dto/request/get-sdvx-id.dto';
 import { GetPwDto } from './dto/request/get-pw.dto';
-import { PwNotMatchException } from './exception/PwNotMatch.exception';
 @Injectable()
 export class AuthService {
   constructor(
@@ -47,9 +46,7 @@ export class AuthService {
       this.accountRepository.selectAccountById(signUpDto.id),
       this.accountRepository.selectAccountBySdvxId(signUpDto.sdvxId),
     ]);
-    if (signUpDto.password !== signUpDto.passwordCheck) {
-      throw new PwNotMatchException();
-    }
+
     if (accountCheck) {
       throw new IdDuplicateException();
     }
@@ -59,7 +56,7 @@ export class AuthService {
 
     await this.accountWriteRepository.createAccount(
       signUpDto.id,
-      hashSync(signUpDto.password, 1),
+      hashSync(signUpDto.pw, 1),
       signUpDto.sdvxId,
     );
   }
@@ -70,12 +67,9 @@ export class AuthService {
     );
   }
   async amendPW(getPwDto: GetPwDto, user: User): Promise<void> {
-    if (getPwDto.password !== getPwDto.passwordCheck) {
-      throw new PwNotMatchException();
-    }
     await this.accountWriteRepository.updateAccountPW(
       user.idx,
-      hashSync(getPwDto.password),
+      hashSync(getPwDto.pw),
     );
   }
   async withdraw(user: User) {
