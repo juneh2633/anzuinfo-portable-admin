@@ -5,6 +5,8 @@ import { ChartWithRadarEntity } from './entity/ChartWithRadar.entity';
 import { NoChartException } from './exception/no-chart.exception';
 import { RedisService } from 'src/common/redis/redis.service';
 import * as crypto from 'crypto';
+import { SongWithChartEntity } from './entity/SongWithChart.entity';
+import { SongRepository } from './repository/song.repository';
 
 @Injectable()
 export class ChartService {
@@ -12,12 +14,13 @@ export class ChartService {
     private readonly chartRepository: ChartRepository,
     private readonly redisService: RedisService,
     private readonly radarRepository: RadarRepository,
+    private readonly songRepository: SongRepository,
   ) {}
 
   async findChartByIdx(chartIdx: number): Promise<ChartWithRadarEntity> {
     const [chart, radar] = await Promise.all([
       this.chartRepository.selectChartByIdx(chartIdx),
-      this.radarRepository.selectRadorByChartIdx(chartIdx),
+      this.radarRepository.selectRadarByChartIdx(chartIdx),
     ]);
 
     if (chart === null) {
@@ -46,7 +49,12 @@ export class ChartService {
         .digest('hex');
       const idxWithLevel = idx.toString() + '@@' + data.level.toString();
       await this.chartRepository.setChartIdx(idxWithLevel, safeKey);
-      console.log(idxWithLevel, safeKey);
     }
+  }
+
+  async findSongAll(): Promise<any> {
+    const songList = await this.songRepository.selectSongAll();
+    //    return songList;
+    return SongWithChartEntity.createMany(songList);
   }
 }

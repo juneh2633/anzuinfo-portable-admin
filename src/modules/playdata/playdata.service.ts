@@ -5,12 +5,12 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { RedisService } from 'src/common/redis/redis.service';
 import * as crypto from 'crypto';
 import { CommonService } from 'src/common/common.service';
-import { PlaydataWithChart } from './entity/PlaydataWithChart.entity';
 import { AccountRepository } from '../account/repository/account.repository';
 import { NoUserException } from './exception/no-user.exception';
 import { NoPlaydataException } from './exception/no-playdata.exception';
 import { User } from '../auth/model/user.model';
 import { AccountService } from '../account/account.service';
+import { PlaydataWithChartEntity } from './entity/PlaydataWithChart.entity';
 
 @Injectable()
 export class PlaydataService {
@@ -104,14 +104,14 @@ export class PlaydataService {
     console.log(`${validPlaydata.length}개의 데이터가 저장되었습니다.`);
   }
 
-  async getVFTable(account: User): Promise<PlaydataWithChart[]> {
+  async getVFTable(account: User): Promise<PlaydataWithChartEntity[]> {
     const updateAt = await this.accountService.findUserUpateAt(account.idx);
     const playdataList = await this.playdataRepository.selectVF(
       account.idx,
       updateAt,
     );
     return playdataList.map((playdata) =>
-      PlaydataWithChart.createDto(
+      PlaydataWithChartEntity.createDto(
         playdata.chart,
         playdata.chart.song,
         playdata,
@@ -121,7 +121,7 @@ export class PlaydataService {
   async getPlaydataByChart(
     account: User,
     chartIdx: number,
-  ): Promise<PlaydataWithChart> {
+  ): Promise<PlaydataWithChartEntity> {
     const updateAt = await this.accountService.findUserUpateAt(account.idx);
     const playdata = await this.playdataRepository.selectPlaydataByChart(
       account.idx,
@@ -131,7 +131,7 @@ export class PlaydataService {
     if (playdata === null) {
       throw new NoPlaydataException();
     }
-    return PlaydataWithChart.createDto(
+    return PlaydataWithChartEntity.createDto(
       playdata.chart,
       playdata.chart.song,
       playdata,
@@ -140,7 +140,7 @@ export class PlaydataService {
   async getPlaydataByLevel(
     account: User,
     level: number,
-  ): Promise<PlaydataWithChart[]> {
+  ): Promise<PlaydataWithChartEntity[]> {
     const updateAt = await this.accountService.findUserUpateAt(account.idx);
     const playdataList = await this.playdataRepository.selectPlaydataByLevel(
       account.idx,
@@ -149,7 +149,7 @@ export class PlaydataService {
     );
     console.log(playdataList);
     return playdataList.map((playdata) =>
-      PlaydataWithChart.createDto(
+      PlaydataWithChartEntity.createDto(
         playdata.chart,
         playdata.chart.song,
         playdata,

@@ -26,13 +26,22 @@ export class ChartController {
     const chart = await this.chartService.cacheChart();
     return new SuccessResponseDto();
   }
+  /**
+   * 곡 전체 가저오기(swagger 사용금지)
+   */
+  @Get('/all')
+  @ExceptionList([])
+  async getSongALl(): Promise<ChartDto> {
+    const data = await this.chartService.findSongAll();
+    return ChartDto.createResponse(data);
+  }
 
   /**
    * idx로 chart 데이터 가저오기
    */
   @Get('/:chartIdx')
   @ExceptionList([])
-  async findChartByIdx(@Param('chartIdx', ParseIntPipe) chartIdx: number) {
+  async getChartByIdx(@Param('chartIdx', ParseIntPipe) chartIdx: number) {
     const chart = await this.chartService.findChartByIdx(chartIdx);
     return ChartDto.createResponse(chart);
   }
