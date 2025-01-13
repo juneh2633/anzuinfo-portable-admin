@@ -11,6 +11,7 @@ import { NoPlaydataException } from './exception/no-playdata.exception';
 import { User } from '../auth/model/user.model';
 import { AccountService } from '../account/account.service';
 import { PlaydataWithChartEntity } from './entity/PlaydataWithChart.entity';
+import { PlaydataEntity } from './entity/Playdata.entity';
 
 @Injectable()
 export class PlaydataService {
@@ -104,24 +105,19 @@ export class PlaydataService {
     console.log(`${validPlaydata.length}개의 데이터가 저장되었습니다.`);
   }
 
-  async getVFTable(account: User): Promise<PlaydataWithChartEntity[]> {
+  async getVFTable(account: User): Promise<PlaydataEntity[]> {
     const updateAt = await this.accountService.findUserUpateAt(account.idx);
     const playdataList = await this.playdataRepository.selectVF(
       account.idx,
       updateAt,
     );
-    return playdataList.map((playdata) =>
-      PlaydataWithChartEntity.createDto(
-        playdata.chart,
-        playdata.chart.song,
-        playdata,
-      ),
-    );
+    return playdataList.map((playdata) => PlaydataEntity.createDto(playdata));
   }
+
   async getPlaydataByChart(
     account: User,
     chartIdx: number,
-  ): Promise<PlaydataWithChartEntity> {
+  ): Promise<PlaydataEntity> {
     const updateAt = await this.accountService.findUserUpateAt(account.idx);
     const playdata = await this.playdataRepository.selectPlaydataByChart(
       account.idx,
@@ -131,29 +127,24 @@ export class PlaydataService {
     if (playdata === null) {
       throw new NoPlaydataException();
     }
-    return PlaydataWithChartEntity.createDto(
-      playdata.chart,
-      playdata.chart.song,
-      playdata,
-    );
+    return PlaydataEntity.createDto(playdata);
   }
+
   async getPlaydataByLevel(
     account: User,
     level: number,
-  ): Promise<PlaydataWithChartEntity[]> {
+  ): Promise<PlaydataEntity[]> {
     const updateAt = await this.accountService.findUserUpateAt(account.idx);
     const playdataList = await this.playdataRepository.selectPlaydataByLevel(
       account.idx,
       updateAt,
       level,
     );
-    console.log(playdataList);
-    return playdataList.map((playdata) =>
-      PlaydataWithChartEntity.createDto(
-        playdata.chart,
-        playdata.chart.song,
-        playdata,
-      ),
-    );
+
+    if (playdataList === null || playdataList.length === 0) {
+      throw new NoPlaydataException();
+    }
+
+    return playdataList.map((playdata) => PlaydataEntity.createDto(playdata));
   }
 }

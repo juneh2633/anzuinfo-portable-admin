@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Playdata, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 
 import { PlaydataWithChartAndSong } from '../model/playdata-chart-and-song.model';
@@ -39,21 +39,11 @@ export class PlaydataRepository {
     });
   }
 
-  async selectVF(
-    accountIdx: number,
-    updateAt: Date,
-  ): Promise<PlaydataWithChartAndSong[]> {
+  async selectVF(accountIdx: number, updateAt: Date): Promise<Playdata[]> {
     return await this.prismaService.playdata.findMany({
       where: {
         accountIdx: accountIdx,
         createdAt: updateAt,
-      },
-      include: {
-        chart: {
-          include: {
-            song: true,
-          },
-        },
       },
       orderBy: {
         chartVf: 'desc',
@@ -65,19 +55,12 @@ export class PlaydataRepository {
     accountIdx: number,
     updateAt: Date,
     chartIdx: number,
-  ): Promise<PlaydataWithChartAndSong | null> {
+  ): Promise<Playdata | null> {
     return await this.prismaService.playdata.findFirst({
       where: {
         accountIdx: accountIdx,
         chartIdx: chartIdx,
         createdAt: updateAt,
-      },
-      include: {
-        chart: {
-          include: {
-            song: true,
-          },
-        },
       },
     });
   }
@@ -86,7 +69,7 @@ export class PlaydataRepository {
     accountIdx: number,
     updateAt: Date,
     level: number,
-  ): Promise<PlaydataWithChartAndSong[]> {
+  ): Promise<Playdata[]> {
     return await this.prismaService.playdata.findMany({
       where: {
         accountIdx: accountIdx,
@@ -96,13 +79,6 @@ export class PlaydataRepository {
         },
       },
 
-      include: {
-        chart: {
-          include: {
-            song: true,
-          },
-        },
-      },
       orderBy: {
         score: 'desc',
       },

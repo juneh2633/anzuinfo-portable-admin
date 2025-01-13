@@ -36,7 +36,7 @@ export class PlaydataController {
   }
 
   /**
-   * 로그인 유저 차트 점수
+   * 로그인 유저 해당 차트 기록
    */
   @Get('/chart/:chartIdx')
   @ExceptionList([new NoPlaydataException()])
@@ -50,7 +50,7 @@ export class PlaydataController {
   }
 
   /**
-   * 로그인 유저 차트 점수
+   * 로그인 유저 해당 레벨 기록
    */
   @Get('/level/:level')
   @ExceptionList([new NoPlaydataException()])
