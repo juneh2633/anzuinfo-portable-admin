@@ -31,8 +31,7 @@ jobs:
           script: |
             cd /home/ubuntu/anzu
             pm2 stop all || true
-            git config pull.rebase false  
-            git config rebase.autoStash true  
+            git reset --hard
             git pull
             pm2 kill || true
             npx prisma generate
