@@ -62,13 +62,10 @@ export class ChartService {
     return SongWithChartEntity.createMany(songList);
   }
 
-  async findVersion(version: string): Promise<VersionEntity> {
+  async findVersion(): Promise<VersionEntity> {
     const curVersion = await this.songRepository.getDataVersion();
-    let check = true;
-    if (curVersion !== version) {
-      check = false;
-    }
-    return VersionEntity.createDto(curVersion, check);
+
+    return VersionEntity.createDto(curVersion);
   }
 
   async insertVersion(version: string): Promise<void> {

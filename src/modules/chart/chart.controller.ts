@@ -45,10 +45,8 @@ export class ChartController {
    */
   @Get('/version')
   @ExceptionList([])
-  async getVersion(
-    @Query() getVersionDto: GetVersionDto,
-  ): Promise<VersionResponseDto> {
-    const data = await this.chartService.findVersion(getVersionDto.version);
+  async getVersion(): Promise<VersionResponseDto> {
+    const data = await this.chartService.findVersion();
     return VersionResponseDto.createResponse(data);
   }
 

@@ -3,7 +3,6 @@ import { VersionEntity } from '../../entity/Version.entity';
 
 export class VersionResponseDto {
   version: string;
-  check: boolean;
   constructor(data: any) {
     Object.assign(this, data);
   }
@@ -11,7 +10,6 @@ export class VersionResponseDto {
   static createResponse(data: VersionEntity) {
     return new VersionResponseDto({
       version: data.version,
-      check: data.check,
     });
   }
 }
