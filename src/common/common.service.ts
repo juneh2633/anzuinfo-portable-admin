@@ -55,7 +55,7 @@ export class CommonService {
     return clearRank;
   }
   getRankIdx(rank: string): number {
-    if (rank === 'puc') {
+    if (rank === 'per') {
       return 0;
     } else if (rank === 'uc') {
       return 1;
