@@ -201,7 +201,6 @@ export class PlaydataService {
           ? targetPlaydata[targetCur].chartIdx
           : 999999,
       ];
-
       if (curChart < curTargetChart) {
         VSEntityList.push(VSEntity.createDto(curChart, curData, null));
         cur++;

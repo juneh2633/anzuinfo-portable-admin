@@ -93,13 +93,4 @@ export class AuthController {
 
     return new SuccessResponseDto();
   }
-
-  /**
-   * 버전정보
-   */
-  @Get('/versionData')
-  @ExceptionList([])
-  async getVersionData(): Promise<any> {
-    return versionData;
-  }
 }

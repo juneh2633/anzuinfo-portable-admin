@@ -69,9 +69,17 @@ export class PlaydataRepository {
     return await this.prismaService.playdata.findMany({
       where: {
         accountIdx: accountIdx,
-        chart: {
-          level: 18,
-        },
+      },
+      orderBy: {
+        chartIdx: 'asc',
+      },
+    });
+  }
+
+  async selectVsData(accountIdx: number, targetIdx: number, page: number) {
+    return await this.prismaService.playdata.findMany({
+      where: {
+        accountIdx: accountIdx,
       },
       orderBy: {
         chartIdx: 'asc',
