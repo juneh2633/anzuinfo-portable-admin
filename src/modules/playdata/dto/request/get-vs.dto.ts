@@ -8,5 +8,5 @@ export class GetVSDto {
     description: '상대 아이디',
     default: 'juneh2633',
   })
-  livalId: string;
+  rivalId: string;
 }
