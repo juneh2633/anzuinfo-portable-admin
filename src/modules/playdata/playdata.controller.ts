@@ -10,6 +10,7 @@ import { PlaydataDto } from './dto/response/playdata.response';
 import { ExceptionList } from 'src/common/decorator/exception-list.decorator';
 import { NoPlaydataException } from './exception/no-playdata.exception';
 import { GetByLevelDto } from './dto/request/get-by-level.dto';
+import { GetVSDto } from './dto/request/get-vs.dto';
 
 @ApiTags('Playdata API')
 @Controller('playdata')
@@ -74,6 +75,20 @@ export class PlaydataController {
       user,
       getByLevelDto.level,
     );
+    return PlaydataDto.createResponse(user, data);
+  }
+
+  /**
+   * 로그인 유저 해당 레벨 기록
+   */
+  @Get('/vs')
+  @ExceptionList([new NoPlaydataException()])
+  @AuthCheck(1)
+  async getVSData(
+    @GetUser() user: User,
+    @Query() getVsDto: GetVSDto,
+  ): Promise<PlaydataDto> {
+    const data = await this.playdataService.findVSData(user, getVsDto.livalId);
     return PlaydataDto.createResponse(user, data);
   }
 }
