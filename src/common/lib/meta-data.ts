@@ -1,4 +1,4 @@
-export const versionData = {
+export const metaData = {
   version: [
     {
       versionName: 'Unknown',

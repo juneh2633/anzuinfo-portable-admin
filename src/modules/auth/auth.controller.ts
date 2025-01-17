@@ -23,7 +23,6 @@ import { SVDuplicateException } from './exception/SVDuplicate.exception';
 import { GetSdvxIdDto } from './dto/request/get-sdvx-id.dto';
 import { GetPwDto } from './dto/request/get-pw.dto';
 import { LoginFailException } from './exception/LoginFail.exception';
-import { versionData } from 'src/common/lib/version-data';
 
 @ApiTags('Auth API')
 @Controller('auth')
