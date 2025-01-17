@@ -16,6 +16,8 @@ import { AuthCheck } from 'src/common/decorator/auth-check.decorator';
 import { NoChartException } from './exception/no-chart.exception';
 import { GetVersionDto } from './dto/request/get-version.dto';
 import { VersionResponseDto } from './dto/response/version.response.dto';
+import { MetaResponseDto } from './dto/response/meta.response.dto';
+import { versionData } from 'src/common/lib/version-data';
 
 @Controller('chart')
 export class ChartController {
@@ -33,11 +35,11 @@ export class ChartController {
   /**
    * 곡 전체 가저오기(swagger 사용금지)
    */
-  @Get('/all')
+  @Get('/meta')
   @ExceptionList([new NoChartException()])
-  async getSongALl(): Promise<ChartResponseDto> {
+  async getSongALl(): Promise<MetaResponseDto> {
     const data = await this.chartService.findSongAll();
-    return ChartResponseDto.createResponse(data);
+    return MetaResponseDto.createResponse(data, versionData.version);
   }
 
   /**

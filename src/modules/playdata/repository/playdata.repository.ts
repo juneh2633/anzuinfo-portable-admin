@@ -76,6 +76,17 @@ export class PlaydataRepository {
     });
   }
 
+  async selectVsData(accountIdx: number, targetIdx: number, page: number) {
+    return await this.prismaService.playdata.findMany({
+      where: {
+        accountIdx: accountIdx,
+      },
+      orderBy: {
+        chartIdx: 'asc',
+      },
+    });
+  }
+
   async selectPlaydataByLevel(
     accountIdx: number,
     updateAt: Date,
