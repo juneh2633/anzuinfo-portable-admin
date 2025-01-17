@@ -88,7 +88,7 @@ export class PlaydataController {
     @GetUser() user: User,
     @Query() getVsDto: GetVSDto,
   ): Promise<PlaydataDto> {
-    const data = await this.playdataService.findVSData(user, getVsDto.livalId);
+    const data = await this.playdataService.findVSData(user, getVsDto.rivalId);
     return PlaydataDto.createResponse(user, data);
   }
 }
