@@ -7,10 +7,10 @@ export class MetaResponseDto {
     Object.assign(this, data);
   }
 
-  static createResponse(data: any, version: any) {
+  static createResponse(data: any, meta: any) {
     return new MetaResponseDto({
-      data: data,
-      version: version,
+      chartData: data,
+      metaData: meta,
     });
   }
 }
