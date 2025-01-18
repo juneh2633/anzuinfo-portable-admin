@@ -79,7 +79,7 @@ export class PlaydataController {
   }
 
   /**
-   * 로그인 유저 해당 레벨 기록
+   * vs가저오기
    */
   @Get('/vs')
   @ExceptionList([new NoPlaydataException()])
@@ -88,7 +88,11 @@ export class PlaydataController {
     @GetUser() user: User,
     @Query() getVsDto: GetVSDto,
   ): Promise<PlaydataDto> {
-    const data = await this.playdataService.findVSData(user, getVsDto.rivalId);
+    const data = await this.playdataService.findVSData(
+      user,
+      getVsDto.rivalId,
+      getVsDto.page,
+    );
     return PlaydataDto.createResponse(user, data);
   }
 }

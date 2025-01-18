@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEmail, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class GetVSDto {
   @IsString()
@@ -9,4 +9,12 @@ export class GetVSDto {
     default: 'juneh2633',
   })
   rivalId: string;
+
+  @IsInt()
+  @Type(() => Number)
+  @ApiProperty({
+    description: '페이지 (1부터)',
+    default: 1,
+  })
+  page: number;
 }
