@@ -59,7 +59,7 @@ model Playdata {
   pucCount   Int?     @map("puc_count")
   score      Int
   exScore    Int?     @map("ex_score")
-  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  createdAt  DateTime @default(now())@map("created_at") @db.Timestamptz(6)
   account    Account  @relation(fields: [accountIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_playdata")
   chart      Chart    @relation(fields: [chartIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_playdata")
 
