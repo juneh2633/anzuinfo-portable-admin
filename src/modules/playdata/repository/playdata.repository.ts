@@ -4,6 +4,7 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 
 import { PlaydataWithChartAndSong } from '../model/playdata-chart-and-song.model';
 import { PlaydataUser } from '../model/playdata-user.model';
+import { PlaydataVS } from '../model/playdata-vs.model';
 interface playdata {
   accountIdx: number;
   chartIdx: number;
@@ -133,5 +134,38 @@ export class PlaydataRepository {
         score: 'desc',
       },
     });
+  }
+
+  async selectVSDataPrisma(
+    userAccountIdx: number,
+    targetAccountIdx: number,
+    page: number,
+    limit = 20,
+  ): Promise<PlaydataVS[]> {
+    const offset = (page - 1) * limit;
+    const result = await this.prismaService.$queryRaw<PlaydataVS[]>`
+      SELECT
+          COALESCE(my.chart_idx, rival.chart_idx) AS "chartIdx",
+          json_build_object('score', my.score, 'rank', my.rank) AS playdata,
+          json_build_object('score', rival.score, 'rank', rival.rank) AS "rivalPlaydata"
+      FROM (
+          SELECT playdata.chart_idx, playdata.score, playdata.rank
+          FROM playdata
+          JOIN account ON playdata.account_idx = account.idx
+          WHERE account.idx = ${userAccountIdx} AND playdata.created_at = account.update_at
+      ) my
+      FULL OUTER JOIN (
+          SELECT playdata.chart_idx, playdata.score, playdata.rank
+          FROM playdata
+          JOIN account  ON playdata.account_idx = account.idx
+          WHERE account.idx = ${targetAccountIdx} AND playdata.created_at = account.update_at
+      ) rival
+      ON my.chart_idx = rival.chart_idx
+      WHERE my.chart_idx IS NOT NULL OR rival.chart_idx IS NOT NULL
+      ORDER BY "chartIdx" ASC
+      LIMIT ${limit} OFFSET ${offset};
+    `;
+
+    return result;
   }
 }

@@ -175,49 +175,21 @@ export class PlaydataService {
     const playdata = this.playdataRepository.selectPlaydataAll(accountIdx);
   }
 
-  async findVSData(user: User, targetId: string): Promise<VSEntity[]> {
+  async findVSData(user: User, targetId: string, page: number) {
     const target = await this.accountRepository.selectAccountById(targetId);
     if (!target) {
       throw new NoUserException();
     }
-    const [playdata, targetPlaydata] = await Promise.all([
-      this.playdataRepository.selectPlaydataAll(user.idx),
-      this.playdataRepository.selectPlaydataAll(target.idx),
-    ]);
+    const vsData = await this.playdataRepository.selectVSDataPrisma(
+      user.idx,
+      target.idx,
+      page,
+    );
 
-    const VSEntityList: VSEntity[] = [];
-    let cur = 1;
-    let targetCur = 1;
-
-    const playdataLen = playdata.length;
-    const targetPlaydatalen = targetPlaydata.length;
-
-    while (cur < playdataLen || targetCur < targetPlaydatalen) {
-      const [curData, curTargetData, curChart, curTargetChart] = [
-        cur < playdataLen ? playdata[cur] : null,
-        targetCur < targetPlaydatalen ? targetPlaydata[targetCur] : null,
-        cur < playdataLen ? playdata[cur].chartIdx : 999999,
-        targetCur < targetPlaydatalen
-          ? targetPlaydata[targetCur].chartIdx
-          : 999999,
-      ];
-      if (curChart < curTargetChart) {
-        VSEntityList.push(VSEntity.createDto(curChart, curData, null));
-        cur++;
-        continue;
-      }
-      if (curChart === curTargetChart) {
-        VSEntityList.push(VSEntity.createDto(curChart, curData, curTargetData));
-        cur++;
-        targetCur++;
-        continue;
-      }
-      if (curChart > curTargetChart) {
-        VSEntityList.push(VSEntity.createDto(curChart, null, curTargetData));
-        targetCur++;
-        continue;
-      }
+    if (!vsData.length) {
+      throw new NoPlaydataException();
     }
-    return VSEntityList;
+
+    return VSEntity.createMany(vsData);
   }
 }

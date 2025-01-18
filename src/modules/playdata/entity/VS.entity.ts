@@ -1,5 +1,6 @@
 import { Account, Chart, Playdata, Song } from '@prisma/client';
 import { PlaydataUser } from '../model/playdata-user.model';
+import { PlaydataVS } from '../model/playdata-vs.model';
 
 export class VSEntity {
   chartIdx: number;
@@ -15,29 +16,16 @@ export class VSEntity {
   constructor(data: any) {
     Object.assign(this, data);
   }
-  public static createDto(
-    chartIdx: number,
-    playdataDao: Playdata,
-    rivalPlaydataDao: Playdata,
-  ) {
-    const playdata =
-      playdataDao === null
-        ? null
-        : {
-            score: playdataDao.score,
-            rank: playdataDao.rank,
-          };
-    const rivalPlaydata =
-      rivalPlaydataDao === null
-        ? null
-        : {
-            score: rivalPlaydataDao.score,
-            rank: rivalPlaydataDao.rank,
-          };
-    return new VSEntity({
-      chartIdx: chartIdx,
-      playdata: playdata,
-      rivalPlaydata: rivalPlaydata,
+
+  public static createMany(playdataVSDaoList: PlaydataVS[]) {
+    return playdataVSDaoList.map((playdataVSDao) => {
+      return new VSEntity({
+        chartIdx: playdataVSDao.chartIdx,
+        playdata: playdataVSDao.playdata.score ? playdataVSDao.playdata : null,
+        rivalPlaydata: playdataVSDao.rivalPlaydata.score
+          ? playdataVSDao.rivalPlaydata
+          : null,
+      });
     });
   }
 }
