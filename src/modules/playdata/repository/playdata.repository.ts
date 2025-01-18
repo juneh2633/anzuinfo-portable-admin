@@ -5,6 +5,7 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { PlaydataWithChartAndSong } from '../model/playdata-chart-and-song.model';
 import { PlaydataUser } from '../model/playdata-user.model';
 import { PlaydataVS } from '../model/playdata-vs.model';
+import { FilterDto } from '../dto/request/filter.dto';
 interface playdata {
   accountIdx: number;
   chartIdx: number;
@@ -166,6 +167,52 @@ export class PlaydataRepository {
       LIMIT ${limit} OFFSET ${offset};
     `;
 
+    return result;
+  }
+
+  async selectPlaydataByFilter(
+    accountIdx: number,
+    updateAt: Date,
+    clearRankFilter: number[],
+    scoreFilter: number[],
+    levelFilter: number[],
+    keyword: string,
+  ): Promise<Playdata[]> {
+    const result = await this.prismaService.playdata.findMany({
+      where: {
+        accountIdx: accountIdx,
+        scoreIdx: scoreFilter?.length
+          ? {
+              in: scoreFilter,
+            }
+          : undefined,
+        rank: clearRankFilter?.length
+          ? {
+              in: clearRankFilter,
+            }
+          : undefined,
+        chart: {
+          level: levelFilter?.length
+            ? {
+                in: levelFilter,
+              }
+            : undefined,
+          song: {
+            title: keyword
+              ? {
+                  contains: keyword,
+                  mode: 'insensitive',
+                }
+              : undefined,
+          },
+        },
+
+        createdAt: updateAt,
+      },
+      orderBy: {
+        chartIdx: 'asc',
+      },
+    });
     return result;
   }
 }

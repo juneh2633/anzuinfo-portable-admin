@@ -13,6 +13,7 @@ import { AccountService } from '../account/account.service';
 import { PlaydataWithChartEntity } from './entity/PlaydataWithChart.entity';
 import { PlaydataEntity } from './entity/Playdata.entity';
 import { VSEntity } from './entity/VS.entity';
+import { FilterDto } from './dto/request/filter.dto';
 
 @Injectable()
 export class PlaydataService {
@@ -191,5 +192,22 @@ export class PlaydataService {
     }
 
     return VSEntity.createMany(vsData);
+  }
+  async findPlaydataByFilter(
+    account: User,
+    filterDto: FilterDto,
+  ): Promise<PlaydataEntity[]> {
+    const playdataList = await this.playdataRepository.selectPlaydataByFilter(
+      account.idx,
+      account.updateAt,
+      filterDto.clearRankFilter,
+      filterDto.scoreFilter,
+      filterDto.levelFilter,
+      filterDto.keyword,
+    );
+    if (playdataList === null || playdataList.length === 0) {
+      throw new NoPlaydataException();
+    }
+    return playdataList.map((playdata) => PlaydataEntity.createDto(playdata));
   }
 }

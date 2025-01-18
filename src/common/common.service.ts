@@ -29,7 +29,7 @@ export class CommonService {
     } else if (score >= 7500000) {
       //B
       scoreRank = 0.85;
-    } else if (score >= 7500000) {
+    } else if (score >= 6500000) {
       //C
       scoreRank = 0.82;
     } else {
@@ -69,7 +69,7 @@ export class CommonService {
   }
   getRank(rankIdx: number): string {
     if (rankIdx === 0) {
-      return 'puc';
+      return 'per';
     } else if (rankIdx === 1) {
       return 'uc';
     } else if (rankIdx === 2) {
@@ -77,7 +77,7 @@ export class CommonService {
     } else if (rankIdx === 3) {
       return 'comp';
     } else {
-      return 'played';
+      return 'play';
     }
   }
 

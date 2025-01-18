@@ -40,6 +40,7 @@ model Chart {
   holdCount    Int?       @map("hold_count")
   tsumamiCount Int?       @map("tsumami_count")
   deletedAt    DateTime?  @map("deleted_at") @db.Timestamptz(6)
+  typeIdx      Int?       @default(0) @map("type_idx")
   song         Song       @relation(fields: [songIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_song_to_chart")
   playdata     Playdata[]
   radar        Radar[]
@@ -59,7 +60,8 @@ model Playdata {
   pucCount   Int?     @map("puc_count")
   score      Int
   exScore    Int?     @map("ex_score")
-  createdAt  DateTime @default(now())@map("created_at") @db.Timestamptz(6)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  scoreIdx  Int?     @map("score_idx")
   account    Account  @relation(fields: [accountIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_playdata")
   chart      Chart    @relation(fields: [chartIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_playdata")
 
