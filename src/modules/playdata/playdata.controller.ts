@@ -11,6 +11,7 @@ import { ExceptionList } from 'src/common/decorator/exception-list.decorator';
 import { NoPlaydataException } from './exception/no-playdata.exception';
 import { GetByLevelDto } from './dto/request/get-by-level.dto';
 import { GetVSDto } from './dto/request/get-vs.dto';
+import { FilterDto } from './dto/request/filter.dto';
 
 @ApiTags('Playdata API')
 @Controller('playdata')
@@ -92,6 +93,23 @@ export class PlaydataController {
       user,
       getVsDto.rivalId,
       getVsDto.page,
+    );
+    return PlaydataDto.createResponse(user, data);
+  }
+
+  /**
+   * vs가저오기
+   */
+  @Get('/filter')
+  @ExceptionList([new NoPlaydataException()])
+  @AuthCheck(1)
+  async getFilter(
+    @GetUser() user: User,
+    @Query() filterDto: FilterDto,
+  ): Promise<PlaydataDto> {
+    const data = await this.playdataService.findPlaydataByFilter(
+      user,
+      filterDto,
     );
     return PlaydataDto.createResponse(user, data);
   }
