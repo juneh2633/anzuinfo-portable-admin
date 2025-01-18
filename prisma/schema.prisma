@@ -30,7 +30,8 @@ model Chart {
   songIdx      Int        @default(autoincrement()) @map("song_idx")
   level        Int
   type         String?    @db.VarChar(255)
-  jacket       String?    @db.VarChar(255)
+  typeIdx      Int?        @default(0) @map("type_idx")
+  jacket       String?    @db.VarChar(255) 
   chartImg     String?    @map("chart_img") @db.VarChar(255)
   effector     String?    @db.VarChar(255)
   illustrator  String     @db.VarChar(255)
@@ -59,7 +60,7 @@ model Playdata {
   pucCount   Int?     @map("puc_count")
   score      Int
   exScore    Int?     @map("ex_score")
-  createdAt  DateTime @default(now())@map("created_at") @db.Timestamptz(6)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   account    Account  @relation(fields: [accountIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_to_playdata")
   chart      Chart    @relation(fields: [chartIdx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "fk_chart_to_playdata")
 
