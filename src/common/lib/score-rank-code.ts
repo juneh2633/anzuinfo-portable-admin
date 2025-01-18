@@ -1,4 +1,4 @@
-export enum ClearRankCode {
+export enum ScoreRankCode {
   's' = 0,
   'AAA+' = 1,
   'AAA' = 2,
