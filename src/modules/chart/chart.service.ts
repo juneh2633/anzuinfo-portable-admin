@@ -10,7 +10,6 @@ import { SongRepository } from './repository/song.repository';
 import { VersionEntity } from './entity/Version.entity';
 
 import { PrismaService } from 'src/common/prisma/prisma.service';
-// import { newSong } from 'static/newSong';
 
 @Injectable()
 export class ChartService {
