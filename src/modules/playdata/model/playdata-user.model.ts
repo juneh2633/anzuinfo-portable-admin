@@ -8,7 +8,7 @@ export type PlaydataUser = Prisma.PlaydataGetPayload<{
         sdvxId: true;
         playerName: true;
         skillLevel: true;
-        updateAt: true;
+        updatedAt: true;
         vf: true;
       };
     };

@@ -38,7 +38,7 @@ export class AuthService {
       vf: account.vf,
       rankIdx: 1,
       createdAt: account.createdAt,
-      updateAt: account.updateAt,
+      updatedAt: account.updatedAt,
     });
   }
 

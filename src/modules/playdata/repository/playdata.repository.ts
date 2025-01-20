@@ -42,11 +42,11 @@ export class PlaydataRepository {
     });
   }
 
-  async selectVF(accountIdx: number, updateAt: Date): Promise<Playdata[]> {
+  async selectVF(accountIdx: number, updatedAt: Date): Promise<Playdata[]> {
     return await this.prismaService.playdata.findMany({
       where: {
         accountIdx: accountIdx,
-        createdAt: updateAt,
+        createdAt: updatedAt,
       },
       orderBy: {
         chartVf: 'desc',
@@ -56,25 +56,25 @@ export class PlaydataRepository {
   }
   async selectPlaydataByChart(
     accountIdx: number,
-    updateAt: Date,
+    updatedAt: Date,
     chartIdx: number,
   ): Promise<Playdata | null> {
     return await this.prismaService.playdata.findFirst({
       where: {
         accountIdx: accountIdx,
         chartIdx: chartIdx,
-        createdAt: updateAt,
+        createdAt: updatedAt,
       },
     });
   }
   async selectPlaydataAll(
     accountIdx: number,
-    updateAt: Date,
+    updatedAt: Date,
   ): Promise<Playdata[]> {
     return await this.prismaService.playdata.findMany({
       where: {
         accountIdx: accountIdx,
-        createdAt: updateAt,
+        createdAt: updatedAt,
       },
       orderBy: {
         chartIdx: 'asc',
@@ -95,13 +95,13 @@ export class PlaydataRepository {
 
   async selectPlaydataByLevel(
     accountIdx: number,
-    updateAt: Date,
+    updatedAt: Date,
     level: number,
   ): Promise<Playdata[]> {
     return await this.prismaService.playdata.findMany({
       where: {
         accountIdx: accountIdx,
-        createdAt: updateAt,
+        createdAt: updatedAt,
         chart: {
           level: level,
         },
@@ -130,7 +130,7 @@ export class PlaydataRepository {
             sdvxId: true,
             playerName: true,
             skillLevel: true,
-            updateAt: true,
+            updatedAt: true,
             vf: true,
           },
         },
@@ -176,7 +176,7 @@ export class PlaydataRepository {
 
   async selectPlaydataByFilter(
     accountIdx: number,
-    updateAt: Date,
+    updatedAt: Date,
     clearRankFilter: number[],
     scoreFilter: number[],
     levelFilter: number[],
@@ -211,7 +211,7 @@ export class PlaydataRepository {
           },
         },
 
-        createdAt: updateAt,
+        createdAt: updatedAt,
       },
       orderBy: {
         chartIdx: 'asc',

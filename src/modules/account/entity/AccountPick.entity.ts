@@ -7,7 +7,7 @@ export class AccountPickEntity {
   playCount: number;
   vf: number;
   skillLevel: String;
-  updateAt: number;
+  updatedAt: number;
   createdAt: number;
 
   constructor(data: any) {
@@ -21,7 +21,7 @@ export class AccountPickEntity {
       playCount: account.playCount,
       vf: account.vf,
       skillLevel: account.skillLevel,
-      updateAt: account.updateAt,
+      updatedAt: account.updatedAt,
       createdAt: account.createdAt,
     });
   }

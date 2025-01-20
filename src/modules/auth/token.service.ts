@@ -18,7 +18,7 @@ export class TokenService {
           idx: 1,
           id: null,
           createdAt: null,
-          updateAt: null,
+          updatedAt: null,
           vf: null,
           rankIdx: 0,
         };
@@ -33,7 +33,7 @@ export class TokenService {
       idx: 1,
       id: null,
       createdAt: null,
-      updateAt: null,
+      updatedAt: null,
       vf: null,
       rankIdx: 0,
     };

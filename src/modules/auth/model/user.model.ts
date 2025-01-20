@@ -3,6 +3,6 @@ export class User {
   id: String;
   vf: number;
   createdAt: Date;
-  updateAt: Date;
+  updatedAt: Date;
   rankIdx: number;
 }
