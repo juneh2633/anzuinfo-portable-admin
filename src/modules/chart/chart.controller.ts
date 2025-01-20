@@ -17,8 +17,6 @@ import { NoChartException } from './exception/no-chart.exception';
 import { GetVersionDto } from './dto/request/get-version.dto';
 import { VersionResponseDto } from './dto/response/version.response.dto';
 import { MetaResponseDto } from './dto/response/meta.response.dto';
-import { metaData } from 'src/common/lib/meta-data';
-import { NewSongDto } from './dto/request/new-song.dto';
 
 @Controller('chart')
 export class ChartController {
@@ -54,8 +52,9 @@ export class ChartController {
   }
 
   /**
-   * 곡 전체 가저오기(swagger 사용금지)
+   * 메타 데이터 캐싱
    */
+  @AuthCheck(2)
   @Post('/meta')
   @ExceptionList([new NoChartException()])
   async setSongALl(): Promise<SuccessResponseDto> {
@@ -93,5 +92,16 @@ export class ChartController {
   async getChartByIdx(@Param('chartIdx', ParseIntPipe) chartIdx: number) {
     const chart = await this.chartService.findChartByIdx(chartIdx);
     return ChartResponseDto.createResponse(chart);
+  }
+
+  /**
+   * 곡 추가
+   */
+  @Post('/song')
+  @AuthCheck(2)
+  @ExceptionList([new NoChartException()])
+  async setSong(): Promise<SuccessResponseDto> {
+    await this.chartService.insertSong();
+    return new SuccessResponseDto();
   }
 }
