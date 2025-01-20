@@ -1,6 +1,6 @@
 
 /static/data.js
-
+/static/newSong.js
 db.erd
 /prisma/seed.ts
 
