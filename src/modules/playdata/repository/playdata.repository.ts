@@ -67,10 +67,14 @@ export class PlaydataRepository {
       },
     });
   }
-  async selectPlaydataAll(accountIdx: number): Promise<Playdata[]> {
+  async selectPlaydataAll(
+    accountIdx: number,
+    updateAt: Date,
+  ): Promise<Playdata[]> {
     return await this.prismaService.playdata.findMany({
       where: {
         accountIdx: accountIdx,
+        createdAt: updateAt,
       },
       orderBy: {
         chartIdx: 'asc',
