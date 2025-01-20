@@ -98,7 +98,7 @@ export class PlaydataController {
   }
 
   /**
-   * vs가저오기
+   * filter
    */
   @Get('/filter')
   @ExceptionList([new NoPlaydataException()])
@@ -111,6 +111,17 @@ export class PlaydataController {
       user,
       filterDto,
     );
+    return PlaydataDto.createResponse(user, data);
+  }
+
+  /**
+   * filter
+   */
+  @Get('/all')
+  @ExceptionList([new NoPlaydataException()])
+  @AuthCheck(1)
+  async getAllData(@GetUser() user: User): Promise<PlaydataDto> {
+    const data = await this.playdataService.findPlaydataAll(user.idx);
     return PlaydataDto.createResponse(user, data);
   }
 }
