@@ -115,7 +115,7 @@ export class PlaydataController {
   }
 
   /**
-   * filter
+   * 플레이 데이터 모두 가져오기
    */
   @Get('/all')
   @ExceptionList([new NoPlaydataException()])

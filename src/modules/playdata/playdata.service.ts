@@ -173,8 +173,11 @@ export class PlaydataService {
   }
 
   async findPlaydataAll(accountIdx: number): Promise<PlaydataEntity[]> {
-    const playdataList =
-      await this.playdataRepository.selectPlaydataAll(accountIdx);
+    const target = await this.accountRepository.selectAccountByIdx(accountIdx);
+    const playdataList = await this.playdataRepository.selectPlaydataAll(
+      accountIdx,
+      target.updateAt,
+    );
     return playdataList.map((playdata) => PlaydataEntity.createDto(playdata));
   }
 
