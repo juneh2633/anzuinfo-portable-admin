@@ -10,7 +10,7 @@ import { SongRepository } from './repository/song.repository';
 import { VersionEntity } from './entity/Version.entity';
 
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { newSong } from 'static/newSong';
+// import { newSong } from 'static/newSong';
 
 @Injectable()
 export class ChartService {
@@ -85,12 +85,10 @@ export class ChartService {
   }
 
   async insertSong(): Promise<void> {
-    const songs = newSong;
-
-    songs.map(async (song) => {
-      await this.songRepository.upsertSongData(song);
-    });
-
-    await this.cacheChart();
+    // const songs = newSong;
+    // songs.map(async (song) => {
+    //   await this.songRepository.upsertSongData(song);
+    // });
+    // await this.cacheChart();
   }
 }
