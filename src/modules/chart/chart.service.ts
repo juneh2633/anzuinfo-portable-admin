@@ -8,6 +8,7 @@ import * as crypto from 'crypto';
 import { SongWithChartEntity } from './entity/SongWithChart.entity';
 import { SongRepository } from './repository/song.repository';
 import { VersionEntity } from './entity/Version.entity';
+import { metaData } from 'src/common/lib/meta-data';
 
 @Injectable()
 export class ChartService {
@@ -60,6 +61,14 @@ export class ChartService {
     }
 
     return SongWithChartEntity.createMany(songList);
+  }
+  async cacheSongAll(): Promise<void> {
+    const data: SongWithChartEntity[] = await this.findSongAll();
+    await this.songRepository.setMetaData(data);
+  }
+
+  async findSongAllByRedis(): Promise<any> {
+    return await this.songRepository.getMetaData();
   }
 
   async findVersion(): Promise<VersionEntity> {

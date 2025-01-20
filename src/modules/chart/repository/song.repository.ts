@@ -3,6 +3,8 @@ import { Song } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { SongWithChartWithRadar } from '../model/SongWithChartWithRadar';
 import { RedisService } from 'src/common/redis/redis.service';
+import { SongWithChartEntity } from '../entity/SongWithChart.entity';
+import { metaData } from 'src/common/lib/meta-data';
 
 @Injectable()
 export class SongRepository {
@@ -42,9 +44,23 @@ export class SongRepository {
   }
 
   async setDataVersion(version: string): Promise<void> {
-    await this.redisService.set('version', version);
+    await this.redisService.set('version@@@@@', version);
   }
   async getDataVersion(): Promise<string> {
-    return await this.redisService.get('version');
+    return await this.redisService.get('version@@@@@');
+  }
+
+  async setMetaData(data: SongWithChartEntity[]): Promise<void> {
+    const serializedData = JSON.stringify({
+      data: data,
+      metaData: metaData,
+    });
+    console.log(serializedData);
+    await this.redisService.set('metadata@@@@@@', serializedData);
+  }
+
+  async getMetaData(): Promise<any> {
+    const serializedData = await this.redisService.get('metadata@@@@@@');
+    return JSON.parse(serializedData);
   }
 }

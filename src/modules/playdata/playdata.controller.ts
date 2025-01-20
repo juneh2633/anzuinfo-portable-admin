@@ -124,4 +124,26 @@ export class PlaydataController {
     const data = await this.playdataService.findPlaydataAll(user.idx);
     return PlaydataDto.createResponse(user, data);
   }
+
+  /**
+   * 플레이 데이터 수동 캐싱
+   */
+  @Post('/cache')
+  @ExceptionList([new NoPlaydataException()])
+  @AuthCheck(1)
+  async redisTestPost(@GetUser() user: User): Promise<SuccessResponseDto> {
+    await this.playdataService.setPlaydataByRedis(user.idx);
+    return new SuccessResponseDto();
+  }
+
+  /**
+   * 플레이 데이터 캐싱 가져오기
+   */
+  @Get('/cache')
+  @ExceptionList([new NoPlaydataException()])
+  @AuthCheck(1)
+  async redisTestGet(@GetUser() user: User): Promise<PlaydataDto> {
+    const data = await this.playdataService.getPlaydataAllByRedis(user.idx);
+    return PlaydataDto.createResponse(user, data);
+  }
 }
