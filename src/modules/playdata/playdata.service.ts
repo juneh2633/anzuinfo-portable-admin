@@ -172,8 +172,10 @@ export class PlaydataService {
     return uniqueData;
   }
 
-  async findPlaydataAll(accountIdx: number) {
-    const playdata = this.playdataRepository.selectPlaydataAll(accountIdx);
+  async findPlaydataAll(accountIdx: number): Promise<PlaydataEntity[]> {
+    const playdataList =
+      await this.playdataRepository.selectPlaydataAll(accountIdx);
+    return playdataList.map((playdata) => PlaydataEntity.createDto(playdata));
   }
 
   async findVSData(user: User, targetId: string, page: number) {
