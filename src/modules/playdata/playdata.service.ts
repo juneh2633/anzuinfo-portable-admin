@@ -108,10 +108,10 @@ export class PlaydataService {
   }
 
   async findVFTable(account: User): Promise<PlaydataEntity[]> {
-    const updateAt = await this.accountService.findUserUpateAt(account.idx);
+    const updatedAt = await this.accountService.findUserUpateAt(account.idx);
     const playdataList = await this.playdataRepository.selectVF(
       account.idx,
-      updateAt,
+      updatedAt,
     );
     return playdataList.map((playdata) => PlaydataEntity.createDto(playdata));
   }
@@ -120,10 +120,10 @@ export class PlaydataService {
     account: User,
     chartIdx: number,
   ): Promise<PlaydataEntity> {
-    const updateAt = await this.accountService.findUserUpateAt(account.idx);
+    const updatedAt = await this.accountService.findUserUpateAt(account.idx);
     const playdata = await this.playdataRepository.selectPlaydataByChart(
       account.idx,
-      updateAt,
+      updatedAt,
       chartIdx,
     );
     if (playdata === null) {
@@ -136,10 +136,10 @@ export class PlaydataService {
     account: User,
     level: number,
   ): Promise<PlaydataEntity[]> {
-    const updateAt = await this.accountService.findUserUpateAt(account.idx);
+    const updatedAt = await this.accountService.findUserUpateAt(account.idx);
     const playdataList = await this.playdataRepository.selectPlaydataByLevel(
       account.idx,
-      updateAt,
+      updatedAt,
       level,
     );
 
@@ -159,8 +159,8 @@ export class PlaydataService {
           const accountIdx = current.accountIdx;
           if (
             !acc[accountIdx] ||
-            new Date(current.account.updateAt) >
-              new Date(acc[accountIdx].account.updateAt)
+            new Date(current.account.updatedAt) >
+              new Date(acc[accountIdx].account.updatedAt)
           ) {
             acc[accountIdx] = current;
           }
@@ -176,7 +176,7 @@ export class PlaydataService {
     const target = await this.accountRepository.selectAccountByIdx(accountIdx);
     const playdataList = await this.playdataRepository.selectPlaydataAll(
       accountIdx,
-      target.updateAt,
+      target.updatedAt,
     );
     return playdataList.map((playdata) => PlaydataEntity.createDto(playdata));
   }
@@ -204,7 +204,7 @@ export class PlaydataService {
   ): Promise<PlaydataEntity[]> {
     const playdataList = await this.playdataRepository.selectPlaydataByFilter(
       account.idx,
-      account.updateAt,
+      account.updatedAt,
       filterDto.clearRankFilter,
       filterDto.scoreFilter,
       filterDto.levelFilter,

@@ -41,7 +41,7 @@ export class AccountRepository {
     playCount: number,
     vf: number,
     skillLevel: string,
-    updateAt: Date,
+    updatedAt: Date,
   ): Promise<void> {
     await this.prismaService.account.update({
       where: {
@@ -52,7 +52,7 @@ export class AccountRepository {
         playerName: playerName,
         vf: vf,
         skillLevel: skillLevel,
-        updateAt: updateAt,
+        updatedAt: updatedAt,
       },
     });
   }

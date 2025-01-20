@@ -25,6 +25,6 @@ export class AccountService {
 
   async findUserUpateAt(accountIdx: number): Promise<Date> {
     const account = await this.accountRepository.selectAccountByIdx(accountIdx);
-    return account.updateAt;
+    return account.updatedAt;
   }
 }
