@@ -20,7 +20,6 @@ export class PlaydataService {
   constructor(
     private readonly playdataRepository: PlaydataRepository,
     private readonly commonService: CommonService,
-    private readonly prismaService: PrismaService,
     private readonly redisService: RedisService,
     private readonly accountRepository: AccountRepository,
     private readonly accountService: AccountService,
@@ -35,7 +34,7 @@ export class PlaydataService {
     if (user === null) {
       throw new NoUserException();
     }
-    console.log(user);
+
     const playdataPromises = getDataDto.tracks.map(async (track) => {
       const [title, type, status, score] = track.split('\t');
 
@@ -104,6 +103,8 @@ export class PlaydataService {
       skillLevel,
       now,
     );
+
+    await this.setPlaydataByRedis(user.idx);
     console.log(`${validPlaydata.length}개의 데이터가 저장되었습니다.`);
   }
 
@@ -198,6 +199,7 @@ export class PlaydataService {
 
     return VSEntity.createMany(vsData);
   }
+
   async findPlaydataByFilter(
     account: User,
     filterDto: FilterDto,
@@ -214,5 +216,19 @@ export class PlaydataService {
       throw new NoPlaydataException();
     }
     return playdataList.map((playdata) => PlaydataEntity.createDto(playdata));
+  }
+
+  async setPlaydataByRedis(accountIdx: number): Promise<void> {
+    const playdataEntity = await this.findPlaydataAll(accountIdx);
+    await this.playdataRepository.setPlaydataAll(accountIdx, playdataEntity);
+  }
+
+  async getPlaydataAllByRedis(accountIdx: number): Promise<PlaydataEntity[]> {
+    const data = await this.playdataRepository.getPlaydataAll(accountIdx);
+    if (data.length === 0) {
+      throw new NoPlaydataException();
+    }
+
+    return data;
   }
 }

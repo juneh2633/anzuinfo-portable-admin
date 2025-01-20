@@ -6,6 +6,8 @@ import { PlaydataWithChartAndSong } from '../model/playdata-chart-and-song.model
 import { PlaydataUser } from '../model/playdata-user.model';
 import { PlaydataVS } from '../model/playdata-vs.model';
 import { FilterDto } from '../dto/request/filter.dto';
+import { RedisService } from 'src/common/redis/redis.service';
+import { PlaydataEntity } from '../entity/Playdata.entity';
 interface playdata {
   accountIdx: number;
   chartIdx: number;
@@ -15,7 +17,10 @@ interface playdata {
 }
 @Injectable()
 export class PlaydataRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly redisService: RedisService,
+  ) {}
   async insertPlaydata(
     accountIdx: number,
     chartIdx: number,
@@ -218,5 +223,21 @@ export class PlaydataRepository {
       },
     });
     return result;
+  }
+
+  async setPlaydataAll(
+    accountIdx: number,
+    playdataList: PlaydataEntity[],
+  ): Promise<void> {
+    const serializedData = JSON.stringify(playdataList);
+    await this.redisService.set(accountIdx.toString(), serializedData);
+  }
+
+  async getPlaydataAll(accountIdx: number): Promise<PlaydataEntity[]> {
+    const serializedData = await this.redisService.get(accountIdx.toString());
+    if (!serializedData) {
+      return [];
+    }
+    return JSON.parse(serializedData) as PlaydataEntity[];
   }
 }

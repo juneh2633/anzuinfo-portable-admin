@@ -3,11 +3,14 @@ import { ChartRepository } from './repository/chart.repository';
 import { RadarRepository } from './repository/radar.repository';
 import { ChartWithRadarEntity } from './entity/ChartWithRadar.entity';
 import { NoChartException } from './exception/no-chart.exception';
-import { RedisService } from 'src/common/redis/redis.service';
+
 import * as crypto from 'crypto';
 import { SongWithChartEntity } from './entity/SongWithChart.entity';
 import { SongRepository } from './repository/song.repository';
 import { VersionEntity } from './entity/Version.entity';
+
+import { PrismaService } from 'src/common/prisma/prisma.service';
+import { newSong } from 'static/newSong';
 
 @Injectable()
 export class ChartService {
@@ -15,6 +18,7 @@ export class ChartService {
     private readonly chartRepository: ChartRepository,
     private readonly radarRepository: RadarRepository,
     private readonly songRepository: SongRepository,
+    private readonly prisma: PrismaService,
   ) {}
 
   async findChartByIdx(chartIdx: number): Promise<ChartWithRadarEntity> {
@@ -61,6 +65,14 @@ export class ChartService {
 
     return SongWithChartEntity.createMany(songList);
   }
+  async cacheSongAll(): Promise<void> {
+    const data: SongWithChartEntity[] = await this.findSongAll();
+    await this.songRepository.setMetaData(data);
+  }
+
+  async findSongAllByRedis(): Promise<any> {
+    return await this.songRepository.getMetaData();
+  }
 
   async findVersion(): Promise<VersionEntity> {
     const curVersion = await this.songRepository.getDataVersion();
@@ -70,5 +82,15 @@ export class ChartService {
 
   async insertVersion(version: string): Promise<void> {
     await this.songRepository.setDataVersion(version);
+  }
+
+  async insertSong(): Promise<void> {
+    const songs = newSong;
+
+    songs.map(async (song) => {
+      await this.songRepository.upsertSongData(song);
+    });
+
+    await this.cacheChart();
   }
 }

@@ -1,5 +1,6 @@
 
 /static/data.js
+
 db.erd
 /prisma/seed.ts
 
