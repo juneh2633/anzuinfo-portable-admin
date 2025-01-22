@@ -31,15 +31,6 @@ export class ChartController {
     const chart = await this.chartService.cacheChart();
     return new SuccessResponseDto();
   }
-  // /**
-  //  * 곡 전체 가저오기(swagger 사용금지)
-  //  */
-  // @Get('/meta')
-  // @ExceptionList([new NoChartException()])
-  // async getSongALl(): Promise<MetaResponseDto> {
-  //   const data = await this.chartService.findSongAll();
-  //   return MetaResponseDto.createResponse(data, metaData);
-  // }
 
   /**
    * 곡 전체 가저오기(swagger 사용금지)

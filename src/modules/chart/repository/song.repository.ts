@@ -52,7 +52,7 @@ export class SongRepository {
 
   async setMetaData(data: SongWithChartEntity[]): Promise<void> {
     const serializedData = JSON.stringify({
-      data: data,
+      chartData: data,
       metaData: metaData,
     });
     console.log(serializedData);
