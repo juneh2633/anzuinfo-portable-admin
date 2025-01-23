@@ -10,9 +10,7 @@ import {
 } from '@nestjs/common';
 import { ChartService } from './chart.service';
 import { ExceptionList } from 'src/common/decorator/exception-list.decorator';
-import { ChartResponseDto } from './dto/response/chart.reponse.dto';
 import { SuccessResponseDto } from 'src/common/dto/Success-response.dto';
-import { AuthCheck } from 'src/common/decorator/auth-check.decorator';
 import { NoChartException } from './exception/no-chart.exception';
 import { GetVersionDto } from './dto/request/get-version.dto';
 import { VersionResponseDto } from './dto/response/version.response.dto';
@@ -24,7 +22,6 @@ export class ChartController {
   /**
    * chartIdx캐싱
    */
-  @AuthCheck(2)
   @Get('/cache')
   @ExceptionList([])
   async cacheChart() {
@@ -45,7 +42,6 @@ export class ChartController {
   /**
    * 메타 데이터 캐싱
    */
-  @AuthCheck(2)
   @Post('/meta')
   @ExceptionList([new NoChartException()])
   async setSongALl(): Promise<SuccessResponseDto> {
@@ -76,20 +72,9 @@ export class ChartController {
   }
 
   /**
-   * idx로 chart 데이터 가저오기
-   */
-  @Get('/:chartIdx')
-  @ExceptionList([new NoChartException()])
-  async getChartByIdx(@Param('chartIdx', ParseIntPipe) chartIdx: number) {
-    const chart = await this.chartService.findChartByIdx(chartIdx);
-    return ChartResponseDto.createResponse(chart);
-  }
-
-  /**
    * 곡 추가
    */
   @Post('/song')
-  @AuthCheck(2)
   @ExceptionList([new NoChartException()])
   async setSong(): Promise<SuccessResponseDto> {
     await this.chartService.insertSong();

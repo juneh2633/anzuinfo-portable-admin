@@ -1,7 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ChartRepository } from './repository/chart.repository';
-import { RadarRepository } from './repository/radar.repository';
-import { ChartWithRadarEntity } from './entity/ChartWithRadar.entity';
 import { NoChartException } from './exception/no-chart.exception';
 
 import * as crypto from 'crypto';
@@ -9,28 +7,14 @@ import { SongWithChartEntity } from './entity/SongWithChart.entity';
 import { SongRepository } from './repository/song.repository';
 import { VersionEntity } from './entity/Version.entity';
 
-import { PrismaService } from 'src/common/prisma/prisma.service';
+import { newSong } from 'static/newsong';
 
 @Injectable()
 export class ChartService {
   constructor(
     private readonly chartRepository: ChartRepository,
-    private readonly radarRepository: RadarRepository,
     private readonly songRepository: SongRepository,
-    private readonly prisma: PrismaService,
   ) {}
-
-  async findChartByIdx(chartIdx: number): Promise<ChartWithRadarEntity> {
-    const [chart, radar] = await Promise.all([
-      this.chartRepository.selectChartByIdx(chartIdx),
-      this.radarRepository.selectRadarByChartIdx(chartIdx),
-    ]);
-
-    if (chart === null) {
-      throw new NoChartException();
-    }
-    return ChartWithRadarEntity.createDto(chart, radar);
-  }
 
   async cacheChart(): Promise<void> {
     const dataList = await this.chartRepository.selectTypeWithTitle();
@@ -84,10 +68,10 @@ export class ChartService {
   }
 
   async insertSong(): Promise<void> {
-    // const songs = newSong;
-    // songs.map(async (song) => {
-    //   await this.songRepository.upsertSongData(song);
-    // });
-    // await this.cacheChart();
+    const songs = newSong;
+    songs.map(async (song) => {
+      await this.songRepository.upsertSongData(song);
+    });
+    await this.cacheChart();
   }
 }
